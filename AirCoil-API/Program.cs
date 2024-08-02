@@ -1,5 +1,9 @@
-using AirCoil_API.Data;
 using Microsoft.EntityFrameworkCore;
+using AirCoil_API;
+using AirCoil_API.Data;
+using AirCoil_API.Models;
+using static System.Net.Mime.MediaTypeNames;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,20 +11,34 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
+builder.Services.AddTransient<Seed>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Database Context Dependency Injection
-var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
-var dbName = Environment.GetEnvironmentVariable("DB_NAME");
-var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
-var connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword}";
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(connectionString);
-});
+    options.UseSqlServer(builder.Configuration["AirCoil:ConnectionString"]);
+}); 
 
 var app = builder.Build();
+
+// Seeding the Database
+if (args.Length == 1 && args[0].ToLower() == "seeddata")
+{
+    SeedData(app);
+}
+void SeedData(IHost app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<Seed>();
+        service.SeedDataContext();
+    }
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

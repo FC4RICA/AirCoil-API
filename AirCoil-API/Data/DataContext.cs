@@ -1,11 +1,11 @@
-﻿using AirCoil_API.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using AirCoil_API.Models;
 
 namespace AirCoil_API.Data
 {
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DbContext> options) : base(options)
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
             
         }
@@ -15,7 +15,7 @@ namespace AirCoil_API.Data
         public DbSet<ServiceCenter> ServiceCenters { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Province> Provinces { get; set; }
-        public DbSet<Series> Series { get; set; }
+        public DbSet<Model> Models { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Job> Jobs { get; set; }
         public DbSet<Image> Images { get; set; }
