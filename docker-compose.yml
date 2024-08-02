@@ -1,0 +1,26 @@
+version: '3.4'
+
+networks:
+  aircoilapi:
+
+services:
+  aircoildb:
+    container_name: air-coil-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 8081:1433
+    networks:
+      - aircoilapi
+
+  aircoilapi:
+    container_name: air-coil-api
+    image: ${DOCKER_REGISTRY-}aircoilapi
+    build:
+      context: .
+      dockerfile: AirCoil-API/Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - aircoildb 
+    networks:
+      - aircoilapi

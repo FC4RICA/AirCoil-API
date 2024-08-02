@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirCoil-API", "AirCoil-API\AirCoil-API.csproj", "{75C154F4-34AE-4396-85DC-B987DEA3D6AA}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FE52ECB9-CFBB-4C0C-92B5-5C3A2C9E51C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75C154F4-34AE-4396-85DC-B987DEA3D6AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75C154F4-34AE-4396-85DC-B987DEA3D6AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75C154F4-34AE-4396-85DC-B987DEA3D6AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75C154F4-34AE-4396-85DC-B987DEA3D6AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE52ECB9-CFBB-4C0C-92B5-5C3A2C9E51C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE52ECB9-CFBB-4C0C-92B5-5C3A2C9E51C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE52ECB9-CFBB-4C0C-92B5-5C3A2C9E51C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE52ECB9-CFBB-4C0C-92B5-5C3A2C9E51C7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61513712-5476-4141-9C7F-5B9BE2EB7306}
+	EndGlobalSection
+EndGlobal
