@@ -4,6 +4,8 @@ using AirCoil_API.Data;
 using AirCoil_API.Models;
 using static System.Net.Mime.MediaTypeNames;
 using System;
+using AirCoil_API.Interface;
+using AirCoil_API.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -3,8 +3,23 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "aircoilapi",
+      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
       "serviceActions": {
-        "aircoil-api": "StartDebugging"
+        "aircoilapi": "StartDebugging",
+        "aircoildb": "StartWithoutDebugging"
+      }
+    },
+    "AirCoil-API": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "aircoilapi",
+      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
+      "serviceActions": {
+        "aircoilapi": "StartDebugging",
+        "aircoildb": "StartWithoutDebugging"
       }
     }
   }
