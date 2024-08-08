@@ -1,6 +1,7 @@
 ﻿using AirCoil_API.Data;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirCoil_API.Repository
 {
@@ -14,15 +15,23 @@ namespace AirCoil_API.Repository
 
         public ICollection<Car> GetCars()
         {
-            return _context.Cars.OrderBy(c => c.Id).ToList();
+            return _context.Cars
+                .Include(c => c.Province)
+                .Include(c => c.Model)
+                .ThenInclude(m => m.Brand)
+                .OrderBy(c => c.Id).ToList();
         }
 
-        Car ICarRepository.GetCar(int id)
+        public Car GetCar(int id)
         {
-            return _context.Cars.Where(c => c.Id == id).FirstOrDefault();
+            return _context.Cars.Where(c => c.Id == id)
+                .Include(c => c.Province)
+                .Include(c => c.Model)
+                .ThenInclude(m => m.Brand)
+                .FirstOrDefault();
         }
 
-        bool ICarRepository.CarExists(int id)
+        public bool CarExists(int id)
         {
             return _context.Cars.Any(c => c.Id == id); 
         }

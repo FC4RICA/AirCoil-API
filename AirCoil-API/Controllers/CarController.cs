@@ -20,7 +20,7 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Car>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<CarDto>))]
         public IActionResult GetCars()
         {
             var cars = _mapper.Map<List<CarDto>>(_carRepository.GetCars());
@@ -34,7 +34,7 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(Car))]
+        [ProducesResponseType(200, Type = typeof(CarDto))]
         [ProducesResponseType(400)]
         public IActionResult GetCar(int id)
         {

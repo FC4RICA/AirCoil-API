@@ -9,6 +9,9 @@ namespace AirCoil_API.Mapping
         public MappingProfile()
         {
             CreateMap<Car, CarDto>();
+            CreateMap<Province, ProvinceDto>();
+            CreateMap<Model, ModelDto>();
+            CreateMap<Brand, BrandDto>();
         }
     }
 }
