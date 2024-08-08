@@ -16,5 +16,17 @@ namespace AirCoil_API.Repository
         {
             return _context.Cars.OrderBy(c => c.Id).ToList();
         }
+
+        Car ICarRepository.GetCar(int id)
+        {
+            return _context.Cars.Where(c => c.Id == id).FirstOrDefault();
+        }
+
+        bool ICarRepository.CarExists(int id)
+        {
+            return _context.Cars.Any(c => c.Id == id); 
+        }
+
+
     }
 }
