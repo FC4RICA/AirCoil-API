@@ -9,7 +9,7 @@ namespace AirCoil_API.Mapping
         public MappingProfile()
         {
             CreateMap<Car, CarDto>();
-            CreateMap<Province, ProvinceDto>();
+            CreateMap<Province, ProvinceDto>().ReverseMap();
             CreateMap<CreateProvinceDto, Province>();
             CreateMap<Model, ModelDto>();
             CreateMap<Brand, BrandDto>();

@@ -35,7 +35,7 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreateProvince([FromBody] CreateProvinceDto provinceCreate)
         {
@@ -64,6 +64,39 @@ namespace AirCoil_API.Controllers
             }
 
             return Ok("Successfully created");
+        }
+
+        [HttpDelete("{provinceId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteResult(int provinceId)
+        {
+            if (!_provinceRepository.ProvinceExists(provinceId))
+            {
+                return NotFound();
+            }
+
+            var provinceToDelete = _provinceRepository.GetProvince(provinceId);
+
+            if (_provinceRepository.GetCarsByProvince(provinceId).Count() > 0)
+            {
+                ModelState.AddModelError("", $"There's a car entities that has a relation with province id: {provinceId}");
+                return StatusCode(405, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_provinceRepository.DeleteProvince(provinceToDelete))
+            {
+                ModelState.AddModelError("", "Error occur while deleting");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }

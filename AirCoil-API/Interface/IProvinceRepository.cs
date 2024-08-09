@@ -1,13 +1,16 @@
 ﻿using AirCoil_API.Models;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace AirCoil_API.Interface
 {
     public interface IProvinceRepository
     {
         ICollection<Province> GetProvices();
+        Province GetProvince(int id);
         bool ProvinceExists(string name);
+        bool ProvinceExists(int id);
         bool CreateProvince(Province province);
+        bool DeleteProvince(Province province);
+        ICollection<Car> GetCarsByProvince(int provinceId);
         bool Save();
     }
 }
