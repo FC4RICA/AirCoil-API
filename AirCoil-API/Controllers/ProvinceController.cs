@@ -66,6 +66,39 @@ namespace AirCoil_API.Controllers
             return Ok("Successfully created");
         }
 
+        [HttpPatch("{provinceId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateResult(int provinceId, [FromBody]CreateProvinceDto updatedProvince)
+        {
+            if (updatedProvince == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_provinceRepository.ProvinceExists(provinceId)) 
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var provinceMap = _mapper.Map<Province>(updatedProvince);
+            provinceMap.Id = provinceId;
+
+            if (!_provinceRepository.UpdateProvince(provinceMap))
+            {
+                ModelState.AddModelError("", "Error occur while updating");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
         [HttpDelete("{provinceId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]

@@ -15,7 +15,7 @@ namespace AirCoil_API.Repository
 
         public ICollection<Province> GetProvices()
         {
-            return _context.Provinces.ToList();
+            return _context.Provinces.OrderBy(p => p.Id).ToList();
         }
 
         public Province GetProvince(int id)
@@ -25,7 +25,13 @@ namespace AirCoil_API.Repository
 
         public bool CreateProvince(Province province)
         {
-            _context.Add(province);
+            _context.Provinces.Add(province);
+            return Save();
+        }
+
+        public bool UpdateProvince(Province province)
+        {
+            _context.Provinces.Update(province);
             return Save();
         }
 
