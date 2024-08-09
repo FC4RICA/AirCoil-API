@@ -33,7 +33,7 @@ namespace AirCoil_API.Controllers
 
             return Ok(provinces);
         }
-
+        
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -70,7 +70,7 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateResult(int provinceId, [FromBody]CreateProvinceDto updatedProvince)
+        public IActionResult UpdateProvince(int provinceId, [FromBody]CreateProvinceDto updatedProvince)
         {
             if (updatedProvince == null)
             {
@@ -103,7 +103,7 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteResult(int provinceId)
+        public IActionResult DeleteProvince(int provinceId)
         {
             if (!_provinceRepository.ProvinceExists(provinceId))
             {
