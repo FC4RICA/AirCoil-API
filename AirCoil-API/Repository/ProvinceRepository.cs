@@ -12,6 +12,12 @@ namespace AirCoil_API.Repository
             _context = context;
         }
 
+        public bool CreateProvince(Province province)
+        {
+            _context.Add(province);
+             return Save();
+        }
+
         public ICollection<Province> GetProvices()
         {
             return _context.Provinces.ToList();
@@ -19,7 +25,13 @@ namespace AirCoil_API.Repository
 
         public bool ProvinceExists(string name)
         {
-            return _context.Provinces.Any(p =>  p.Id.Equals(name));
+            return _context.Provinces.Any(p =>  p.Name.Equals(name));
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
         }
     }
 }

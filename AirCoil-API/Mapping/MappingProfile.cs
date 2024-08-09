@@ -10,6 +10,7 @@ namespace AirCoil_API.Mapping
         {
             CreateMap<Car, CarDto>();
             CreateMap<Province, ProvinceDto>();
+            CreateMap<CreateProvinceDto, Province>();
             CreateMap<Model, ModelDto>();
             CreateMap<Brand, BrandDto>();
         }

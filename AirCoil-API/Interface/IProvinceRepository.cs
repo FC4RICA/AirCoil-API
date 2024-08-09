@@ -7,5 +7,7 @@ namespace AirCoil_API.Interface
     {
         ICollection<Province> GetProvices();
         bool ProvinceExists(string name);
+        bool CreateProvince(Province province);
+        bool Save();
     }
 }

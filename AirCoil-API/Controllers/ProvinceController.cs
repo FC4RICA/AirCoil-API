@@ -1,6 +1,7 @@
 ﻿using AirCoil_API.Data;
 using AirCoil_API.Dto;
 using AirCoil_API.Interface;
+using AirCoil_API.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,38 @@ namespace AirCoil_API.Controllers
             }
 
             return Ok(provinces);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateProvince([FromBody] CreateProvinceDto provinceCreate)
+        {
+            if (provinceCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (_provinceRepository.ProvinceExists(provinceCreate.Name))
+            {
+                ModelState.AddModelError("", "Province already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var provinceMap = _mapper.Map<Province>(provinceCreate);
+
+            if (!_provinceRepository.CreateProvince(provinceMap))
+            {
+                ModelState.AddModelError("", "Error occur while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
         }
     }
 }
