@@ -21,6 +21,7 @@ namespace AirCoil_API.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CarDto>))]
+        [ProducesResponseType(400)]
         public IActionResult GetCars()
         {
             var cars = _mapper.Map<List<CarDto>>(_carRepository.GetCars());

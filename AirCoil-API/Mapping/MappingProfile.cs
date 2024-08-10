@@ -13,7 +13,7 @@ namespace AirCoil_API.Mapping
             CreateMap<CreateProvinceDto, Province>();
             CreateMap<Model, ModelDto>();
             CreateMap<Brand, BrandDto>().ReverseMap();
-            CreateMap<CreateBrandDto,  Brand>();
+            CreateMap<CreateBrandDto, Brand>();
         }
     }
 }

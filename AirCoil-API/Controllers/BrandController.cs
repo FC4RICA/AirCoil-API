@@ -22,6 +22,7 @@ namespace AirCoil_API.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<BrandDto>))]
+        [ProducesResponseType(400)]
         public IActionResult GetBrands()
         {
             var brands = _mapper.Map<List<BrandDto>>(_brandRepository.GetBrands());
@@ -56,8 +57,10 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(204)]
+        [ProducesResponseType(201)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         public IActionResult CreateBrand([FromBody] CreateBrandDto brandCreate)
         {
             if (brandCreate == null)
@@ -84,13 +87,14 @@ namespace AirCoil_API.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Created();
         }
 
         [HttpPatch("{brandId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public IActionResult UpdateResult(int brandId,[FromBody] CreateBrandDto updatedBrand)
         {
             if (updatedBrand == null)
@@ -121,9 +125,11 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpDelete("{brandId}")]
-        [ProducesResponseType(400)]
         [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
+        [ProducesResponseType(405)]
+        [ProducesResponseType(500)]
         public IActionResult DeleteProvince(int brandId)
         {
             if (!_brandRepository.BrandExists(brandId))
