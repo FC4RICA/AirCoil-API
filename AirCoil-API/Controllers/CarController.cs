@@ -33,17 +33,17 @@ namespace AirCoil_API.Controllers
             return Ok(cars);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{carId}")]
         [ProducesResponseType(200, Type = typeof(CarDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetCar(int id)
+        public IActionResult GetCar(int carId)
         {
-            if (!_carRepository.CarExists(id))
+            if (!_carRepository.CarExists(carId))
             {
                 return NotFound();
             }
 
-            var car = _mapper.Map<CarDto>(_carRepository.GetCar(id));
+            var car = _mapper.Map<CarDto>(_carRepository.GetCar(carId));
 
             if (!ModelState.IsValid)
             {

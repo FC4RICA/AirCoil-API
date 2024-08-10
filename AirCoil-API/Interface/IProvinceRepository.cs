@@ -11,7 +11,7 @@ namespace AirCoil_API.Interface
         bool CreateProvince(Province province);
         bool UpdateProvince(Province province);
         bool DeleteProvince(Province province);
-        ICollection<Car> GetCarsByProvince(int provinceId);
+        ICollection<Car> GetCarsByProvince(int id);
         bool Save();
     }
 }
