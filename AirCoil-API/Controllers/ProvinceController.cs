@@ -1,5 +1,4 @@
-﻿using AirCoil_API.Data;
-using AirCoil_API.Dto;
+﻿using AirCoil_API.Dto;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
 using AutoMapper;
