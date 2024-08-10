@@ -1,7 +1,6 @@
 ﻿using AirCoil_API.Dto;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
-using AirCoil_API.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -95,7 +94,7 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult UpdateResult(int brandId,[FromBody] CreateBrandDto updatedBrand)
+        public IActionResult UpdateBrand(int brandId,[FromBody] CreateBrandDto updatedBrand)
         {
             if (updatedBrand == null)
             {
@@ -130,7 +129,7 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(405)]
         [ProducesResponseType(500)]
-        public IActionResult DeleteProvince(int brandId)
+        public IActionResult DeleteBrand(int brandId)
         {
             if (!_brandRepository.BrandExists(brandId))
             {

@@ -4,6 +4,11 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public BrandDto Brand { get; set; }
+    }
+
+    public class CreateModelDto
+    {
+        public required string Name { get; set; }
+        public required int BrandId { get; set; }
     }
 }
