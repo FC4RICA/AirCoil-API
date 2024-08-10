@@ -157,5 +157,26 @@ namespace AirCoil_API.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("{brandId}/models")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<BrandDto>))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult GetModelsByBrand(int brandId)
+        {
+            if (!_brandRepository.BrandExists(brandId))
+            {
+                return NotFound();
+            }
+
+            var models = _mapper.Map<List<ModelDto>>(_brandRepository.GetModelsByBrand(brandId));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(models);
+        }
     }
 }

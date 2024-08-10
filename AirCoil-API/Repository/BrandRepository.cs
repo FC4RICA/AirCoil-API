@@ -25,7 +25,7 @@ namespace AirCoil_API.Repository
 
         public ICollection<Model> GetModelsByBrand(int id)
         {
-            return _context.Models.Where(m => m.Id == id).ToList();
+            return _context.Models.Where(m => m.Brand.Id == id).OrderBy(m => m.Id).ToList();
         }
 
         public bool CreateBrand(Brand brand)
