@@ -9,6 +9,5 @@
     public class CreateModelDto
     {
         public required string Name { get; set; }
-        public required int BrandId { get; set; }
     }
 }

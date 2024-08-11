@@ -6,6 +6,7 @@ namespace AirCoil_API.Interface
     {
         ICollection<Model> GetModels();
         Model GetModel(int id);
+        ICollection<Car> GetCarsByModel(int id);
         bool CreateModel(Model model);
         bool UpdateModel(Model model);
         bool DeleteModel(Model model);

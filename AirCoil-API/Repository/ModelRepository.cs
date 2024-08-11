@@ -23,19 +23,27 @@ namespace AirCoil_API.Repository
             return _context.Models.Where(m => m.Id == id).FirstOrDefault();
         }
 
+        public ICollection<Car> GetCarsByModel(int id)
+        {
+            return _context.Cars.Where(c => c.Model.Id == id).OrderBy(c => c.Id).ToList();
+        }
+
         public bool CreateModel(Model model)
         {
-            throw new NotImplementedException();
+            _context.Models.Add(model);
+            return Save();
         }
 
         public bool UpdateModel(Model model)
         {
-            throw new NotImplementedException();
+            _context.Models.Update(model);
+            return Save();
         }
 
         public bool DeleteModel(Model model)
         {
-            throw new NotImplementedException();
+            _context.Models.Remove(model);
+            return Save();
         }
 
         public bool ModelExists(int id)
