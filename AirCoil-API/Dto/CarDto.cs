@@ -6,8 +6,11 @@ namespace AirCoil_API.Dto
     {
         public int Id { get; set; }
         public string LicensePlate { get; set; }
-        public ProvinceDto Province { get; set; }
-        public ModelDto Model { get; set; }
         public DateTime DateTime { get; set; }
+    }
+
+    public class CreateCarDto
+    {
+        public required string LicensePlate { get; set; }
     }
 }
