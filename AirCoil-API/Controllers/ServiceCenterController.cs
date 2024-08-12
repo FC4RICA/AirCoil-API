@@ -80,7 +80,6 @@ namespace AirCoil_API.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(422)]
         [ProducesResponseType(500)]
         public IActionResult CreateServiceCenter([FromBody] CreateServiceCenterDto serviceCenterCreate)
         {
@@ -102,13 +101,14 @@ namespace AirCoil_API.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Created();
         }
 
         [HttpPatch("{serviceCenterId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public IActionResult UpdateProvince(int serviceCenterId, [FromBody] CreateServiceCenterDto updatedServiceCenter)
         {
             if (updatedServiceCenter == null)
@@ -127,7 +127,7 @@ namespace AirCoil_API.Controllers
             }
 
             var serviceCenterMap = _mapper.Map<ServiceCenter>(updatedServiceCenter);
-            serviceCenterId.Id = serviceCenterId;
+            serviceCenterMap.Id = serviceCenterId;
 
             if (!_serviceCenterRepository.UpdateServiceCenter(serviceCenterMap))
             {
@@ -142,6 +142,8 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
+        [ProducesResponseType(405)]
+        [ProducesResponseType(500)]
         public IActionResult DeleteProvince(int serviceCenterId)
         {
             if (!_serviceCenterRepository.ServiceCenterExists(serviceCenterId))
