@@ -23,6 +23,11 @@ namespace AirCoil_API.Repository
             return _context.ServiceCenters.Where(s => s.Id == id).FirstOrDefault();
         }
 
+        public ICollection<Branch> GetBranchesByServiceCenter(int id)
+        {
+            return _context.Branches.Where(b => b.ServiceCenter.Id == id).ToList();
+        }
+
         public bool CreateServiceCenter(ServiceCenter serviceCenter)
         {
             _context.ServiceCenters.Add(serviceCenter);

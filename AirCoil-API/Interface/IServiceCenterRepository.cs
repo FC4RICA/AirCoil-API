@@ -6,6 +6,7 @@ namespace AirCoil_API.Interface
     {
         ICollection<ServiceCenter> GetServiceCenters();
         ServiceCenter GetServiceCenter(int id);
+        ICollection<Branch> GetBranchesByServiceCenter(int id);
         bool CreateServiceCenter(ServiceCenter serviceCenter);
         bool UpdateServiceCenter(ServiceCenter serviceCenter);
         bool DeleteServiceCenter(ServiceCenter serviceCenter);
