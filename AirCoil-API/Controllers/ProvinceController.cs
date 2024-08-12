@@ -21,6 +21,7 @@ namespace AirCoil_API.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ProvinceDto>))]
+        [ProducesResponseType(400)]
         public IActionResult GetProvinces()
         {
             var provinces = _mapper.Map<List<ProvinceDto>>(_provinceRepository.GetProvices());
@@ -34,8 +35,10 @@ namespace AirCoil_API.Controllers
         }
         
         [HttpPost]
-        [ProducesResponseType(204)]
+        [ProducesResponseType(201)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         public IActionResult CreateProvince([FromBody] CreateProvinceDto provinceCreate)
         {
             if (provinceCreate == null)
@@ -62,13 +65,14 @@ namespace AirCoil_API.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Created();
         }
 
         [HttpPatch("{provinceId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public IActionResult UpdateProvince(int provinceId, [FromBody]CreateProvinceDto updatedProvince)
         {
             if (updatedProvince == null)
@@ -102,6 +106,8 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
+        [ProducesResponseType(405)]
+        [ProducesResponseType(500)]
         public IActionResult DeleteProvince(int provinceId)
         {
             if (!_provinceRepository.ProvinceExists(provinceId))

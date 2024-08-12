@@ -61,6 +61,7 @@ namespace AirCoil_API.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
         public IActionResult CreateModel([FromQuery] int brandId, [FromBody] CreateModelDto modelCreate)
