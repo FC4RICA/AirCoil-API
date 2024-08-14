@@ -7,7 +7,7 @@
         public string Password { get; set; }
         public DateTime DateTime { get; set; }
         public bool isDeleted { get; set; }
-
+        public Branch Branch { get; set; }
         public ICollection<Job> Jobs { get; set; }
     }
 }

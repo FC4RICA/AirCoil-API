@@ -5,5 +5,6 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public ServiceCenter ServiceCenter { get; set; }
+        public ICollection<User> Users { get; set; }
     }
 }
