@@ -104,7 +104,7 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult UpdateModel(int modelId, [FromBody] CreateModelDto updatedModel)
+        public IActionResult UpdateModel(int modelId, [FromQuery] int brandId, [FromBody] CreateModelDto updatedModel)
         {
             if (updatedModel == null)
             {
@@ -123,6 +123,7 @@ namespace AirCoil_API.Controllers
 
             var modelMap = _mapper.Map<Model>(updatedModel);
             modelMap.Id = modelId;
+            modelMap.Brand = _brandRepository.GetBrand(brandId);
 
             if (!_modelRepository.UpdateModel(modelMap))
             {
