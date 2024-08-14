@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AirCoil_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240802081724_InitialCreate")]
+    [Migration("20240814073938_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
