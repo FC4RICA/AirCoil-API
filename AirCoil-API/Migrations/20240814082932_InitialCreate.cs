@@ -65,22 +65,6 @@ namespace AirCoil_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Models",
                 columns: table => new
                 {
@@ -144,6 +128,29 @@ namespace AirCoil_API.Migrations
                         name: "FK_Cars_Provinces_ProvinceId",
                         column: x => x.ProvinceId,
                         principalTable: "Provinces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    BranchId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Branches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -243,19 +250,18 @@ namespace AirCoil_API.Migrations
                 name: "IX_Models_BrandId",
                 table: "Models",
                 column: "BrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_BranchId",
+                table: "Users",
+                column: "BranchId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Branches");
-
-            migrationBuilder.DropTable(
                 name: "Images");
-
-            migrationBuilder.DropTable(
-                name: "ServiceCenters");
 
             migrationBuilder.DropTable(
                 name: "Jobs");
@@ -276,7 +282,13 @@ namespace AirCoil_API.Migrations
                 name: "Provinces");
 
             migrationBuilder.DropTable(
+                name: "Branches");
+
+            migrationBuilder.DropTable(
                 name: "Brands");
+
+            migrationBuilder.DropTable(
+                name: "ServiceCenters");
         }
     }
 }

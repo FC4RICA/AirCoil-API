@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AirCoil_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240814073938_InitialCreate")]
+    [Migration("20240814082932_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -237,6 +237,9 @@ namespace AirCoil_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
@@ -252,6 +255,8 @@ namespace AirCoil_API.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
 
                     b.ToTable("Users");
                 });
@@ -333,6 +338,22 @@ namespace AirCoil_API.Migrations
                         .IsRequired();
 
                     b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("AirCoil_API.Models.User", b =>
+                {
+                    b.HasOne("AirCoil_API.Models.Branch", "Branch")
+                        .WithMany("Users")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+                });
+
+            modelBuilder.Entity("AirCoil_API.Models.Branch", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("AirCoil_API.Models.Brand", b =>
