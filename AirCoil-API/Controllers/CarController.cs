@@ -80,7 +80,7 @@ namespace AirCoil_API.Controllers
             return Ok(jobs);
         }
 
-        [HttpPut]
+        [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
