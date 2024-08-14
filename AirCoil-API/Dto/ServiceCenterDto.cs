@@ -9,4 +9,5 @@
     public class CreateServiceCenterDto
     {
         public string Name { get; set; }
+    }
 }
