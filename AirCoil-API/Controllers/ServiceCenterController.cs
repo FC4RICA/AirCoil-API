@@ -3,7 +3,6 @@ using AirCoil_API.Interface;
 using AirCoil_API.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 
 namespace AirCoil_API.Controllers
 {

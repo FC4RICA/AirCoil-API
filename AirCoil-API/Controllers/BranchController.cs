@@ -1,7 +1,6 @@
 ﻿using AirCoil_API.Dto;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
-using AirCoil_API.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
