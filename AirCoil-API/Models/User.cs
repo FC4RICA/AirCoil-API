@@ -1,13 +1,11 @@
-﻿namespace AirCoil_API.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace AirCoil_API.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Password { get; set; }
-        public DateTime DateTime { get; set; }
-        public bool isDeleted { get; set; }
-        public Branch Branch { get; set; }
-        public ICollection<Job> Jobs { get; set; }
+        public int? BranchId { get; set; }
+        public Branch? Branch { get; set; }
+        public ICollection<Job> Jobs { get; set; } = new List<Job>();
     }
 }
