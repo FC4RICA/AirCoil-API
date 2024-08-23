@@ -18,7 +18,7 @@ namespace AirCoil_API
                     new Car()
                     {
                         LicensePlate = "มก123",
-                        DateTime = DateTime.Now,
+                        CreatedAt = DateTime.Now,
                         Province = new Province()
                         {
                             Name = "นครราชสีมา"

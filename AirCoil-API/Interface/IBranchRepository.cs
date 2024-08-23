@@ -11,7 +11,7 @@ namespace AirCoil_API.Interface
         bool UpdateBranch(Branch branch);
         bool DeleteBranch(Branch branch);
         bool BranchExists(int id);
-        bool BranchesExists(string name);
+        bool BranchExists(string name);
         bool Save();
     }
 }
