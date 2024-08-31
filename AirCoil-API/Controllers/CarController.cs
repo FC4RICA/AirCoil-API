@@ -2,6 +2,7 @@
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AirCoil_API.Controllers
