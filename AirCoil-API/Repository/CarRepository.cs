@@ -13,52 +13,52 @@ namespace AirCoil_API.Repository
             _context = context;
         }
 
-        public ICollection<Car> GetCars()
+        public async Task<ICollection<Car>> GetCarsAsync()
         {
-            return _context.Cars.OrderBy(c => c.Id).ToList();
+            return await _context.Cars.OrderBy(c => c.Id).ToListAsync();
         }
 
-        public Car GetCar(int id)
+        public async Task<Car> GetCarAsync(int id)
         {
-            return _context.Cars.Where(c => c.Id == id).FirstOrDefault();
+            return await _context.Cars.Where(c => c.Id == id).FirstOrDefaultAsync();
         }
 
-        public ICollection<Job> GetJobsByCar(int id)
+        public async Task<ICollection<Job>> GetJobsByCarAsync(int id)
         {
-            return _context.Jobs.Where(j => j.Car.Id == id).OrderBy(j => j.Id).ToList();
+            return await _context.Jobs.Where(j => j.Car.Id == id).OrderBy(j => j.Id).ToListAsync();
         }
 
-        public bool CreateCar(Car car)
+        public async Task<bool> CreateCarAsync(Car car)
         {
             _context.Cars.Add(car);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool UpdateCar(Car car)
+        public async Task<bool> UpdateCarAsync(Car car)
         {
             _context.Cars.Update(car);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool DeleteCar(Car car)
+        public async Task<bool> DeleteCarAsync(Car car)
         {
             _context.Cars.Remove(car);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool CarExists(int id)
+        public async Task<bool> CarExistsAsync(int id)
         {
-            return _context.Cars.Any(c => c.Id == id); 
+            return await _context.Cars.AnyAsync(c => c.Id == id); 
         }
-        public bool CarExists(Car car)
+        public async Task<bool> CarExistsAsync(Car car)
         {
-            return _context.Cars
-                .Any(c => c.LicensePlate == car.LicensePlate && c.Province == car.Province && c.Model == car.Model);
+            return await _context.Cars
+                .AnyAsync(c => c.LicensePlate == car.LicensePlate && c.Province == car.Province && c.Model == car.Model);
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }
 

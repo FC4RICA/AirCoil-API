@@ -1,6 +1,7 @@
 ﻿using AirCoil_API.Data;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirCoil_API.Repository
 {
@@ -13,52 +14,52 @@ namespace AirCoil_API.Repository
             _context = context;
         }
 
-        public ICollection<Model> GetModels()
+        public async Task<ICollection<Model>> GetModelsAsync()
         {
-            return _context.Models.OrderBy(m => m.Id).ToList();
+            return await _context.Models.OrderBy(m => m.Id).ToListAsync();
         }
 
-        public Model GetModel(int id)
+        public async Task<Model> GetModelAsync(int id)
         {
-            return _context.Models.Where(m => m.Id == id).FirstOrDefault();
+            return await _context.Models.Where(m => m.Id == id).FirstOrDefaultAsync();
         }
 
-        public ICollection<Car> GetCarsByModel(int id)
+        public async Task<ICollection<Car>> GetCarsByModelAsync(int id)
         {
-            return _context.Cars.Where(c => c.Model.Id == id).OrderBy(c => c.Id).ToList();
+            return await _context.Cars.Where(c => c.Model.Id == id).OrderBy(c => c.Id).ToListAsync();
         }
 
-        public bool CreateModel(Model model)
+        public async Task<bool> CreateModelAsync(Model model)
         {
             _context.Models.Add(model);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool UpdateModel(Model model)
+        public async Task<bool> UpdateModelAsync(Model model)
         {
             _context.Models.Update(model);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool DeleteModel(Model model)
+        public async Task<bool> DeleteModelAsync(Model model)
         {
             _context.Models.Remove(model);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool ModelExists(int id)
+        public async Task<bool> ModelExistsAsync(int id)
         {
-            return _context.Models.Any(m => m.Id == id);
+            return await _context.Models.AnyAsync(m => m.Id == id);
         }
 
-        public bool ModelExists(string name)
+        public async Task<bool> ModelExistsAsync(string name)
         {
-            return _context.Models.Any(m => m.Name.Equals(name));
+            return await _context.Models.AnyAsync(m => m.Name.Equals(name));
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }
     }

@@ -24,9 +24,9 @@ namespace AirCoil_API.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<BranchDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetBranches()
+        public async Task<IActionResult> GetBranches()
         {
-            var branches = _mapper.Map<ICollection<BrandDto>>(_branchRepository.GetBranches());
+            var branches = _mapper.Map<ICollection<BrandDto>>(await _branchRepository.GetBranchesAsync());
 
             if (!ModelState.IsValid)
             {
@@ -40,14 +40,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(200, Type = typeof(BranchDto))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult GetBranch(int branchId)
+        public async Task<IActionResult> GetBranch(int branchId)
         {
-            if (!_branchRepository.BranchExists(branchId))
+            if (!await _branchRepository.BranchExistsAsync(branchId))
             {
                 return NotFound();
             }
 
-            var branch = _mapper.Map<BranchDto>(_branchRepository.GetBranch(branchId));
+            var branch = _mapper.Map<BranchDto>(await _branchRepository.GetBranchAsync(branchId));
 
             if (!ModelState.IsValid)
             {
@@ -63,14 +63,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
-        public IActionResult CreateBranch([FromQuery] int serviceCenterId, [FromBody] CreateBranchDto branchCreate)
+        public async Task<IActionResult> CreateBranch([FromQuery] int serviceCenterId, [FromBody] CreateBranchDto branchCreate)
         {
             if (branchCreate == null)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!_serviceCenterRepository.ServiceCenterExists(serviceCenterId))
+            if (!await _serviceCenterRepository.ServiceCenterExistsAsync(serviceCenterId))
             {
                 return NotFound();
             }
@@ -81,9 +81,9 @@ namespace AirCoil_API.Controllers
             }
 
             var branchMap = _mapper.Map<Branch>(branchCreate);
-            branchMap.ServiceCenter = _serviceCenterRepository.GetServiceCenter(serviceCenterId);
+            branchMap.ServiceCenter = await _serviceCenterRepository.GetServiceCenterAsync(serviceCenterId);
 
-            if (!_branchRepository.CreateBranch(branchMap))
+            if (!await _branchRepository.CreateBranchAsync(branchMap))
             {
                 ModelState.AddModelError("", "Error occur while saving");
                 return StatusCode(500, ModelState);
@@ -97,14 +97,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult UpdateModel(int branchId, [FromQuery] int serviceCenterId ,[FromBody] CreateBranchDto updatedBranch)
+        public async Task<IActionResult> UpdateModel(int branchId, [FromQuery] int serviceCenterId ,[FromBody] CreateBranchDto updatedBranch)
         {
             if (updatedBranch == null)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!_branchRepository.BranchExists(branchId))
+            if (!await _branchRepository.BranchExistsAsync(branchId))
             {
                 return NotFound();
             }
@@ -116,9 +116,9 @@ namespace AirCoil_API.Controllers
 
             var branchMap = _mapper.Map<Branch>(updatedBranch);
             branchMap.Id = branchId;
-            branchMap.ServiceCenter = _serviceCenterRepository.GetServiceCenter(serviceCenterId);
+            branchMap.ServiceCenter = await _serviceCenterRepository.GetServiceCenterAsync(serviceCenterId);
 
-            if (!_branchRepository.UpdateBranch(branchMap))
+            if (!await _branchRepository.UpdateBranchAsync(branchMap))
             {
                 ModelState.AddModelError("", "Error occur while updating");
                 return StatusCode(500, ModelState);
@@ -133,16 +133,16 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(405)]
         [ProducesResponseType(500)]
-        public IActionResult DeleteModel(int branchId)
+        public async Task<IActionResult> DeleteModel(int branchId)
         {
-            if (!_branchRepository.BranchExists(branchId))
+            if (!await _branchRepository.BranchExistsAsync(branchId))
             {
                 return NotFound();
             }
 
-            var branchToDelete = _branchRepository.GetBranch(branchId);
+            var branchToDelete = await _branchRepository.GetBranchAsync(branchId);
 
-            if (_branchRepository.GetUserByBranch(branchId).Count() > 0)
+            if ((await _branchRepository.GetUserByBranchAsync(branchId)).Count() > 0)
             {
                 ModelState.AddModelError("", $"There's a user entities that has a relation with branch id: {branchId}");
                 return StatusCode(405, ModelState);
@@ -153,7 +153,7 @@ namespace AirCoil_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_branchRepository.DeleteBranch(branchToDelete))
+            if (!await _branchRepository.DeleteBranchAsync(branchToDelete))
             {
                 ModelState.AddModelError("", "Error occur while deleting");
                 return StatusCode(500, ModelState);

@@ -2,6 +2,7 @@
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirCoil_API.Repository
 {
@@ -13,51 +14,51 @@ namespace AirCoil_API.Repository
             _context = context;
         }
 
-        public ICollection<Province> GetProvices()
+        public async Task<ICollection<Province>> GetProvicesAsync()
         {
-            return _context.Provinces.OrderBy(p => p.Id).ToList();
+            return await _context.Provinces.OrderBy(p => p.Id).ToListAsync();
         }
 
-        public Province GetProvince(int id)
+        public async Task<Province> GetProvinceAsync(int id)
         {
-            return _context.Provinces.Where(p => p.Id == id).FirstOrDefault();
+            return await _context.Provinces.Where(p => p.Id == id).FirstOrDefaultAsync();
         }
 
-        public bool CreateProvince(Province province)
+        public async Task<bool> CreateProvinceAsync(Province province)
         {
             _context.Provinces.Add(province);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool UpdateProvince(Province province)
+        public async Task<bool> UpdateProvinceAsync(Province province)
         {
             _context.Provinces.Update(province);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool DeleteProvince(Province province)
+        public async Task<bool> DeleteProvinceAsync(Province province)
         {
             _context.Provinces.Remove(province);
-            return Save();
+            return await SaveAsync();
         }
 
-        public ICollection<Car> GetCarsByProvince(int id)
+        public async Task<ICollection<Car>> GetCarsByProvinceAsync(int id)
         {
-            return _context.Cars.Where(c => c.Province.Id == id).ToList();
+            return await _context.Cars.Where(c => c.Province.Id == id).ToListAsync();
         }
 
-        public bool ProvinceExists(string name)
+        public async Task<bool> ProvinceExistsAsync(string name)
         {
-            return _context.Provinces.Any(p => p.Name.Equals(name));
+            return await _context.Provinces.AnyAsync(p => p.Name.Equals(name));
         }
-        public bool ProvinceExists(int id)
+        public async Task<bool> ProvinceExistsAsync(int id)
         {
-            return _context.Provinces.Any(p => p.Id == id);
+            return await _context.Provinces.AnyAsync(p => p.Id == id);
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }
     }

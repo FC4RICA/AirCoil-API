@@ -4,14 +4,14 @@ namespace AirCoil_API.Interface
 {
     public interface IBranchRepository
     {
-        ICollection<Branch> GetBranches();
-        Branch GetBranch(int id);
-        ICollection<User> GetUserByBranch(int id); 
-        bool CreateBranch(Branch branch);
-        bool UpdateBranch(Branch branch);
-        bool DeleteBranch(Branch branch);
-        bool BranchExists(int id);
-        bool BranchExists(string name);
-        bool Save();
+        Task<ICollection<Branch>> GetBranchesAsync();
+        Task<Branch> GetBranchAsync(int id);
+        Task<ICollection<User>> GetUserByBranchAsync(int id); 
+        Task<bool> CreateBranchAsync(Branch branch);
+        Task<bool> UpdateBranchAsync(Branch branch);
+        Task<bool> DeleteBranchAsync(Branch branch);
+        Task<bool> BranchExistsAsync(int id);
+        Task<bool> BranchExistsAsync(string name);
+        Task<bool> SaveAsync();
     }
 }

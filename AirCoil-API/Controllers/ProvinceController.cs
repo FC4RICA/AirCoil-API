@@ -22,9 +22,9 @@ namespace AirCoil_API.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ProvinceDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetProvinces()
+        public async Task<IActionResult> GetProvinces()
         {
-            var provinces = _mapper.Map<List<ProvinceDto>>(_provinceRepository.GetProvices());
+            var provinces = _mapper.Map<List<ProvinceDto>>(await _provinceRepository.GetProvicesAsync());
 
             if (!ModelState.IsValid)
             {
@@ -39,14 +39,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
-        public IActionResult CreateProvince([FromBody] CreateProvinceDto provinceCreate)
+        public async Task<IActionResult> CreateProvince([FromBody] CreateProvinceDto provinceCreate)
         {
             if (provinceCreate == null)
             {
                 return BadRequest(ModelState);
             }
 
-            if (_provinceRepository.ProvinceExists(provinceCreate.Name))
+            if (await _provinceRepository.ProvinceExistsAsync(provinceCreate.Name))
             {
                 ModelState.AddModelError("", "Province already exists");
                 return StatusCode(422, ModelState);
@@ -59,7 +59,7 @@ namespace AirCoil_API.Controllers
 
             var provinceMap = _mapper.Map<Province>(provinceCreate);
 
-            if (!_provinceRepository.CreateProvince(provinceMap))
+            if (!(await _provinceRepository.CreateProvinceAsync(provinceMap)))
             {
                 ModelState.AddModelError("", "Error occur while saving");
                 return StatusCode(500, ModelState);
@@ -73,14 +73,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult UpdateProvince(int provinceId, [FromBody]CreateProvinceDto updatedProvince)
+        public async Task<IActionResult> UpdateProvince(int provinceId, [FromBody]CreateProvinceDto updatedProvince)
         {
             if (updatedProvince == null)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!_provinceRepository.ProvinceExists(provinceId)) 
+            if (!await _provinceRepository.ProvinceExistsAsync(provinceId)) 
             {
                 return NotFound();
             }
@@ -93,7 +93,7 @@ namespace AirCoil_API.Controllers
             var provinceMap = _mapper.Map<Province>(updatedProvince);
             provinceMap.Id = provinceId;
 
-            if (!_provinceRepository.UpdateProvince(provinceMap))
+            if (!await _provinceRepository.UpdateProvinceAsync(provinceMap))
             {
                 ModelState.AddModelError("", "Error occur while updating");
                 return StatusCode(500, ModelState);
@@ -108,16 +108,16 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(405)]
         [ProducesResponseType(500)]
-        public IActionResult DeleteProvince(int provinceId)
+        public async Task<IActionResult> DeleteProvince(int provinceId)
         {
-            if (!_provinceRepository.ProvinceExists(provinceId))
+            if (!await _provinceRepository.ProvinceExistsAsync(provinceId))
             {
                 return NotFound();
             }
 
-            var provinceToDelete = _provinceRepository.GetProvince(provinceId);
+            var provinceToDelete = await _provinceRepository.GetProvinceAsync(provinceId);
 
-            if (_provinceRepository.GetCarsByProvince(provinceId).Count() > 0)
+            if ((await _provinceRepository.GetCarsByProvinceAsync(provinceId)).Count() > 0)
             {
                 ModelState.AddModelError("", $"There's a car entities that has a relation with province id: {provinceId}");
                 return StatusCode(405, ModelState);
@@ -128,7 +128,7 @@ namespace AirCoil_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_provinceRepository.DeleteProvince(provinceToDelete))
+            if (!await _provinceRepository.DeleteProvinceAsync(provinceToDelete))
             {
                 ModelState.AddModelError("", "Error occur while deleting");
                 return StatusCode(500, ModelState);

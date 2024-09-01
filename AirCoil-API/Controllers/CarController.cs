@@ -27,9 +27,9 @@ namespace AirCoil_API.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CarDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetCars()
+        public async Task<IActionResult> GetCars()
         {
-            var cars = _mapper.Map<List<CarDto>>(_carRepository.GetCars());
+            var cars = _mapper.Map<List<CarDto>>(await _carRepository.GetCarsAsync());
 
             if (!ModelState.IsValid)
             {
@@ -43,14 +43,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(200, Type = typeof(CarDto))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult GetCar(int carId)
+        public async Task<IActionResult> GetCar(int carId)
         {
-            if (!_carRepository.CarExists(carId))
+            if (!await _carRepository.CarExistsAsync(carId))
             {
                 return NotFound();
             }
 
-            var car = _mapper.Map<CarDto>(_carRepository.GetCar(carId));
+            var car = _mapper.Map<CarDto>(await _carRepository.GetCarAsync(carId));
 
             if (!ModelState.IsValid)
             {
@@ -64,14 +64,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(200, Type = typeof(ICollection<JobDto>))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult GetJobsByCar(int carId)
+        public async Task<IActionResult> GetJobsByCar(int carId)
         {
-            if (!_carRepository.CarExists(carId))
+            if (!await _carRepository.CarExistsAsync(carId))
             {
                 return NotFound();
             }
 
-            var jobs = _mapper.Map<List<JobDto>>(_carRepository.GetJobsByCar(carId));
+            var jobs = _mapper.Map<List<JobDto>>(await _carRepository.GetJobsByCarAsync(carId));
 
             if (!ModelState.IsValid)
             {
@@ -87,14 +87,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
-        public IActionResult CreateCar([FromQuery] int provinceId, [FromQuery] int modelId, [FromBody] CreateCarDto carCreate)
+        public async Task<IActionResult> CreateCar([FromQuery] int provinceId, [FromQuery] int modelId, [FromBody] CreateCarDto carCreate)
         {
             if (carCreate == null)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!_modelRepository.ModelExists(modelId) || !_provinceRepository.ProvinceExists(provinceId))
+            if (!await _modelRepository.ModelExistsAsync(modelId) || !await _provinceRepository.ProvinceExistsAsync(provinceId))
             {
                 return NotFound();
             }
@@ -105,16 +105,16 @@ namespace AirCoil_API.Controllers
             }
 
             var carMap = _mapper.Map<Car>(carCreate);
-            carMap.Province = _provinceRepository.GetProvince(provinceId);
-            carMap.Model = _modelRepository.GetModel(modelId);
+            carMap.Province = await _provinceRepository.GetProvinceAsync(provinceId);
+            carMap.Model = await _modelRepository.GetModelAsync(modelId);
 
-            if (_carRepository.CarExists(carMap))
+            if (await _carRepository.CarExistsAsync(carMap))
             {
                 ModelState.AddModelError("", "Car already exists");
                 return StatusCode(422, ModelState);
             }
 
-            if (!_carRepository.CreateCar(carMap))
+            if (!await _carRepository.CreateCarAsync(carMap))
             {
                 ModelState.AddModelError("", "Error occur while saving");
                 return StatusCode(500, ModelState);
@@ -128,9 +128,9 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult UpdateCar(int carId, [FromQuery] int provinceId, [FromQuery] int modelId, [FromBody] CreateCarDto updatedCar) 
+        public async Task<IActionResult> UpdateCar(int carId, [FromQuery] int provinceId, [FromQuery] int modelId, [FromBody] CreateCarDto updatedCar) 
         {
-            if (!_carRepository.CarExists(carId))
+            if (!await _carRepository.CarExistsAsync(carId))
             {
                 return NotFound();
             }
@@ -142,10 +142,10 @@ namespace AirCoil_API.Controllers
 
             var carMap = _mapper.Map<Car>(updatedCar);
             carMap.Id = carId;
-            carMap.Province = _provinceRepository.GetProvince(provinceId);
-            carMap.Model = _modelRepository.GetModel(modelId);
+            carMap.Province = await _provinceRepository.GetProvinceAsync(provinceId);
+            carMap.Model = await _modelRepository.GetModelAsync(modelId);
 
-            if (!_carRepository.UpdateCar(carMap))
+            if (!await _carRepository.UpdateCarAsync(carMap))
             {
                 ModelState.AddModelError("", "Error occur while updating");
                 return StatusCode(500, ModelState);
@@ -160,16 +160,16 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(405)]
         [ProducesResponseType(500)]
-        public IActionResult DeleteModel(int carId)
+        public async Task<IActionResult> DeleteModel(int carId)
         {
-            if (!_carRepository.CarExists(carId))
+            if (!await _carRepository.CarExistsAsync(carId))
             {
                 return NotFound();
             }
 
-            var carToDelete = _carRepository.GetCar(carId);
+            var carToDelete = await _carRepository.GetCarAsync(carId);
 
-            if (_carRepository.GetJobsByCar(carId).Count() > 0)
+            if ((await _carRepository.GetJobsByCarAsync(carId)).Count() > 0)
             {
                 ModelState.AddModelError("", $"There's a job entities that has a relation with car id: {carId}");
                 return StatusCode(405, ModelState);
@@ -180,7 +180,7 @@ namespace AirCoil_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_carRepository.DeleteCar(carToDelete))
+            if (!await _carRepository.DeleteCarAsync(carToDelete))
             {
                 ModelState.AddModelError("", "Error occur while deleting");
                 return StatusCode(500, ModelState);

@@ -4,14 +4,14 @@ namespace AirCoil_API.Interface
 {
     public interface ICarRepository
     {
-        ICollection<Car> GetCars();
-        Car GetCar(int id);
-        ICollection<Job> GetJobsByCar(int id);
-        bool CreateCar(Car car);
-        bool UpdateCar(Car car);
-        bool DeleteCar(Car car);
-        bool CarExists(int id);
-        bool CarExists(Car car);
-        bool Save();
+        Task<ICollection<Car>> GetCarsAsync();
+        Task<Car> GetCarAsync(int id);
+        Task<ICollection<Job>> GetJobsByCarAsync(int id);
+        Task<bool> CreateCarAsync(Car car);
+        Task<bool> UpdateCarAsync(Car car);
+        Task<bool> DeleteCarAsync(Car car);
+        Task<bool> CarExistsAsync(int id);
+        Task<bool> CarExistsAsync(Car car);
+        Task<bool> SaveAsync();
     }
 }

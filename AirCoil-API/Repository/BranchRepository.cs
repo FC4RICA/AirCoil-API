@@ -1,6 +1,7 @@
 ﻿using AirCoil_API.Data;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirCoil_API.Repository
 {
@@ -13,52 +14,52 @@ namespace AirCoil_API.Repository
             _context = context;
         }
 
-        public ICollection<Branch> GetBranches()
+        public async Task<ICollection<Branch>> GetBranchesAsync()
         {
-            return _context.Branches.OrderBy(b => b.Name).ToList();
+            return await _context.Branches.OrderBy(b => b.Name).ToListAsync();
         }
 
-        public Branch GetBranch(int id)
+        public async Task<Branch> GetBranchAsync(int id)
         {
-            return _context.Branches.Where(b => b.Id == id).FirstOrDefault();
+            return await _context.Branches.Where(b => b.Id == id).FirstOrDefaultAsync();
         }
 
-        public ICollection<User> GetUserByBranch(int id)
+        public async Task<ICollection<User>> GetUserByBranchAsync(int id)
         {
-            return _context.Users.Where(u => u.Branch.Id == id).OrderBy(u => u.Id).ToList();
+            return await _context.Users.Where(u => u.Branch.Id == id).OrderBy(u => u.Id).ToListAsync();
         }
 
-        public bool CreateBranch(Branch branch)
+        public async Task<bool> CreateBranchAsync(Branch branch)
         {
             _context.Branches.Add(branch);
-            return Save();
+            return await SaveAsync();
         }
             
-        public bool UpdateBranch(Branch branch)
+        public async Task<bool> UpdateBranchAsync(Branch branch)
         {
             _context.Branches.Update(branch);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool DeleteBranch(Branch branch)
+        public async Task<bool> DeleteBranchAsync(Branch branch)
         {
             _context.Branches.Remove(branch);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool BranchExists(int id)
+        public async Task<bool> BranchExistsAsync(int id)
         {
-            return _context.Branches.Any(b => b.Id == id);
+            return await _context.Branches.AnyAsync(b => b.Id == id);
         }
 
-        public bool BranchExists(string name)
+        public async Task<bool> BranchExistsAsync(string name)
         {
-            return _context.Branches.Any(u => u.Name.Equals(name));
+            return await _context.Branches.AnyAsync(u => u.Name.Equals(name));
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }
 

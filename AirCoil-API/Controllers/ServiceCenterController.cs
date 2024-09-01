@@ -22,9 +22,9 @@ namespace AirCoil_API.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ServiceCenterDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetServiceCenter()
+        public async Task<IActionResult> GetServiceCenter()
         {
-            var serviceCenters = _mapper.Map<List<ServiceCenter>>(_serviceCenterRepository.GetServiceCenters());
+            var serviceCenters = _mapper.Map<List<ServiceCenter>>(await _serviceCenterRepository.GetServiceCentersAsync());
 
             if (!ModelState.IsValid)
             {
@@ -38,14 +38,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<ServiceCenterDto>))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult GetServiceCenter(int serviceCenterId)
+        public async Task<IActionResult> GetServiceCenter(int serviceCenterId)
         {
-            if (!_serviceCenterRepository.ServiceCenterExists(serviceCenterId))
+            if (!await _serviceCenterRepository.ServiceCenterExistsAsync(serviceCenterId))
             {
                 return NotFound();
             }
 
-            var serviceCenter = _mapper.Map<ServiceCenter>(_serviceCenterRepository.GetServiceCenter(serviceCenterId));
+            var serviceCenter = _mapper.Map<ServiceCenter>(await _serviceCenterRepository.GetServiceCenterAsync(serviceCenterId));
 
             if (!ModelState.IsValid)
             {
@@ -59,14 +59,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<ServiceCenterDto>))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult GetBranchesByServiceCenter(int serviceCenterId)
+        public async Task<IActionResult> GetBranchesByServiceCenter(int serviceCenterId)
         {
-            if (!_serviceCenterRepository.ServiceCenterExists(serviceCenterId))
+            if (!await _serviceCenterRepository.ServiceCenterExistsAsync(serviceCenterId))
             {
                 return NotFound();
             }
 
-            var branches = _mapper.Map<List<Branch>>(_serviceCenterRepository.GetBranchesByServiceCenter(serviceCenterId));
+            var branches = _mapper.Map<List<Branch>>(await _serviceCenterRepository.GetBranchesByServiceCenterAsync(serviceCenterId));
 
             if (!ModelState.IsValid)
             {
@@ -80,7 +80,7 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public IActionResult CreateServiceCenter([FromBody] CreateServiceCenterDto serviceCenterCreate)
+        public async Task<IActionResult> CreateServiceCenter([FromBody] CreateServiceCenterDto serviceCenterCreate)
         {
             if (serviceCenterCreate == null)
             {
@@ -94,7 +94,7 @@ namespace AirCoil_API.Controllers
 
             var serviceCenterMap = _mapper.Map<ServiceCenter>(serviceCenterCreate);
 
-            if (!_serviceCenterRepository.CreateServiceCenter(serviceCenterMap))
+            if (!await _serviceCenterRepository.CreateServiceCenterAsync(serviceCenterMap))
             {
                 ModelState.AddModelError("", "Error occur while saving");
                 return StatusCode(500, ModelState);
@@ -108,14 +108,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult UpdateProvince(int serviceCenterId, [FromBody] CreateServiceCenterDto updatedServiceCenter)
+        public async Task<IActionResult> UpdateProvince(int serviceCenterId, [FromBody] CreateServiceCenterDto updatedServiceCenter)
         {
             if (updatedServiceCenter == null)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!_serviceCenterRepository.ServiceCenterExists(serviceCenterId))
+            if (!await _serviceCenterRepository.ServiceCenterExistsAsync(serviceCenterId))
             {
                 return NotFound();
             }
@@ -128,7 +128,7 @@ namespace AirCoil_API.Controllers
             var serviceCenterMap = _mapper.Map<ServiceCenter>(updatedServiceCenter);
             serviceCenterMap.Id = serviceCenterId;
 
-            if (!_serviceCenterRepository.UpdateServiceCenter(serviceCenterMap))
+            if (!await _serviceCenterRepository.UpdateServiceCenterAsync(serviceCenterMap))
             {
                 ModelState.AddModelError("", "Error occur while updating");
                 return StatusCode(500, ModelState);
@@ -143,15 +143,17 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(405)]
         [ProducesResponseType(500)]
-        public IActionResult DeleteProvince(int serviceCenterId)
+        public async Task<IActionResult> DeleteProvince(int serviceCenterId)
         {
-            if (!_serviceCenterRepository.ServiceCenterExists(serviceCenterId))
+            if (!await _serviceCenterRepository.ServiceCenterExistsAsync(serviceCenterId))
             {
                 return NotFound();
             }
-            var provinceToDelete = _serviceCenterRepository.GetServiceCenter(serviceCenterId);
+            var provinceToDelete = await _serviceCenterRepository.GetServiceCenterAsync(serviceCenterId);
 
-            if (_serviceCenterRepository.GetBranchesByServiceCenter(serviceCenterId).Count() > 0)
+
+
+            if ((await _serviceCenterRepository.GetBranchesByServiceCenterAsync(serviceCenterId)).Count() > 0)
             {
                 ModelState.AddModelError("", $"There's a branch entities that has a relation with serviceCenter id: {serviceCenterId}");
                 return StatusCode(405, ModelState);
@@ -162,7 +164,7 @@ namespace AirCoil_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_serviceCenterRepository.DeleteServiceCenter(provinceToDelete))
+            if (!await _serviceCenterRepository.DeleteServiceCenterAsync(provinceToDelete))
             {
                 ModelState.AddModelError("", "Error occur while deleting");
                 return StatusCode(500, ModelState);

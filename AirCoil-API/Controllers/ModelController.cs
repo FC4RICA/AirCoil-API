@@ -24,9 +24,9 @@ namespace AirCoil_API.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ModelDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetModels()
+        public async Task<IActionResult> GetModels()
         {
-            var models = _mapper.Map<List<ModelDto>>(_modelRepository.GetModels());
+            var models = _mapper.Map<List<ModelDto>>(await _modelRepository.GetModelsAsync());
 
             if (!ModelState.IsValid)
             {
@@ -40,14 +40,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(200, Type = typeof(ModelDto))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult GetModel(int modelId)
+        public async Task<IActionResult> GetModel(int modelId)
         {
-            if (!_modelRepository.ModelExists(modelId))
+            if (!await _modelRepository.ModelExistsAsync(modelId))
             {
                 return NotFound();
             }
 
-            var model = _mapper.Map<ModelDto>(_modelRepository.GetModel(modelId));
+            var model = _mapper.Map<ModelDto>(await _modelRepository.GetModelAsync(modelId));
 
             if (!ModelState.IsValid)
             {
@@ -63,20 +63,20 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
-        public IActionResult CreateModel([FromQuery] int brandId, [FromBody] CreateModelDto modelCreate)
+        public async Task<IActionResult> CreateModel([FromQuery] int brandId, [FromBody] CreateModelDto modelCreate)
         {
             if (modelCreate == null)
             {
                 return BadRequest(ModelState);
             }
 
-            if (_modelRepository.ModelExists(modelCreate.Name))
+            if (await _modelRepository.ModelExistsAsync(modelCreate.Name))
             {
                 ModelState.AddModelError("", "Model already exists");
                 return StatusCode(422, ModelState);
             }
 
-            if (!_brandRepository.BrandExists(brandId))
+            if (!await _brandRepository.BrandExistsAsync(brandId))
             {
                 return NotFound();
             }
@@ -87,9 +87,9 @@ namespace AirCoil_API.Controllers
             }
 
             var modelMap = _mapper.Map<Model>(modelCreate);
-            modelMap.Brand = _brandRepository.GetBrand(brandId);
+            modelMap.Brand = await _brandRepository.GetBrandAsync(brandId);
 
-            if (!_modelRepository.CreateModel(modelMap))
+            if (!await _modelRepository.CreateModelAsync(modelMap))
             {
                 ModelState.AddModelError("", "Error occur while saving");
                 return StatusCode(500, ModelState);
@@ -103,14 +103,14 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult UpdateModel(int modelId, [FromQuery] int brandId, [FromBody] CreateModelDto updatedModel)
+        public async Task<IActionResult> UpdateModel(int modelId, [FromQuery] int brandId, [FromBody] CreateModelDto updatedModel)
         {
             if (updatedModel == null)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!_modelRepository.ModelExists(modelId))
+            if (!await _modelRepository.ModelExistsAsync(modelId))
             {
                 return NotFound();
             }
@@ -122,9 +122,9 @@ namespace AirCoil_API.Controllers
 
             var modelMap = _mapper.Map<Model>(updatedModel);
             modelMap.Id = modelId;
-            modelMap.Brand = _brandRepository.GetBrand(brandId);
+            modelMap.Brand = await _brandRepository.GetBrandAsync(brandId);
 
-            if (!_modelRepository.UpdateModel(modelMap))
+            if (!await _modelRepository.UpdateModelAsync(modelMap))
             {
                 ModelState.AddModelError("", "Error occur while updating");
                 return StatusCode(500, ModelState);
@@ -139,16 +139,16 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(405)]
         [ProducesResponseType(500)]
-        public IActionResult DeleteModel(int modelId)
+        public async Task<IActionResult> DeleteModel(int modelId)
         {
-            if (!_modelRepository.ModelExists(modelId))
+            if (!await _modelRepository.ModelExistsAsync(modelId))
             {
                 return NotFound();
             }
 
-            var modelToDelete = _modelRepository.GetModel(modelId);
+            var modelToDelete = await _modelRepository.GetModelAsync(modelId);
 
-            if (_modelRepository.GetCarsByModel(modelId).Count() > 0)
+            if ((await _modelRepository.GetCarsByModelAsync(modelId)).Count() > 0)
             {
                 ModelState.AddModelError("", $"There's a car entities that has a relation with model id: {modelId}");
                 return StatusCode(405, ModelState);
@@ -159,7 +159,7 @@ namespace AirCoil_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_modelRepository.DeleteModel(modelToDelete))
+            if (!await _modelRepository.DeleteModelAsync(modelToDelete))
             {
                 ModelState.AddModelError("", "Error occur while deleting");
                 return StatusCode(500, ModelState);

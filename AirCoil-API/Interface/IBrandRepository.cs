@@ -4,14 +4,14 @@ namespace AirCoil_API.Interface
 {
     public interface IBrandRepository
     {
-        ICollection<Brand> GetBrands();
-        Brand GetBrand(int id);
-        ICollection<Model> GetModelsByBrand(int id);
-        bool CreateBrand(Brand brand);
-        bool UpdateBrand(Brand brand);
-        bool DeleteBrand(Brand brand);
-        bool BrandExists(int id);
-        bool BrandExists(string name);
-        bool Save();
+        Task<ICollection<Brand>> GetBrandsAsync();
+        Task<Brand> GetBrandAsync(int id);
+        Task<ICollection<Model>> GetModelsByBrandAsync(int id);
+        Task<bool> CreateBrandAsync(Brand brand);
+        Task<bool> UpdateBrandAsync(Brand brand);
+        Task<bool> DeleteBrandAsync(Brand brand);
+        Task<bool> BrandExistsAsync(int id);
+        Task<bool> BrandExistsAsync(string name);
+       Task<bool> SaveAsync();
     }
 }

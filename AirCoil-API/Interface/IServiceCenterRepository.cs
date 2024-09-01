@@ -4,13 +4,13 @@ namespace AirCoil_API.Interface
 {
     public interface IServiceCenterRepository
     {
-        ICollection<ServiceCenter> GetServiceCenters();
-        ServiceCenter GetServiceCenter(int id);
-        ICollection<Branch> GetBranchesByServiceCenter(int id);
-        bool CreateServiceCenter(ServiceCenter serviceCenter);
-        bool UpdateServiceCenter(ServiceCenter serviceCenter);
-        bool DeleteServiceCenter(ServiceCenter serviceCenter);
-        bool ServiceCenterExists(int id);
-        bool Save();
+        Task<ICollection<ServiceCenter>> GetServiceCentersAsync();
+        Task<ServiceCenter> GetServiceCenterAsync(int id);
+        Task<ICollection<Branch>> GetBranchesByServiceCenterAsync(int id);
+        Task<bool> CreateServiceCenterAsync(ServiceCenter serviceCenter);
+        Task<bool> UpdateServiceCenterAsync(ServiceCenter serviceCenter);
+        Task<bool> DeleteServiceCenterAsync(ServiceCenter serviceCenter);
+        Task<bool> ServiceCenterExistsAsync(int id);
+        Task<bool> SaveAsync();
     }
 }

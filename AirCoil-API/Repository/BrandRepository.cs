@@ -1,6 +1,7 @@
 ﻿using AirCoil_API.Data;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirCoil_API.Repository
 {
@@ -13,51 +14,51 @@ namespace AirCoil_API.Repository
             _context = context;
         }
 
-        public ICollection<Brand> GetBrands()
+        public async Task<ICollection<Brand>> GetBrandsAsync()
         {
-            return _context.Brands.OrderBy(b => b.Id).ToList();
+            return await _context.Brands.OrderBy(b => b.Id).ToListAsync();
         }
 
-        public Brand GetBrand(int id) 
+        public async Task<Brand> GetBrandAsync(int id) 
         {
-            return _context.Brands.Where(b => b.Id == id).FirstOrDefault();
+            return await _context.Brands.Where(b => b.Id == id).FirstOrDefaultAsync();
         }
 
-        public ICollection<Model> GetModelsByBrand(int id)
+        public async Task<ICollection<Model>> GetModelsByBrandAsync(int id)
         {
-            return _context.Models.Where(m => m.Brand.Id == id).OrderBy(m => m.Id).ToList();
+            return await _context.Models.Where(m => m.Brand.Id == id).OrderBy(m => m.Id).ToListAsync();
         }
 
-        public bool CreateBrand(Brand brand)
+        public async Task<bool> CreateBrandAsync(Brand brand)
         {
             _context.Brands.Add(brand);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool UpdateBrand(Brand brand)
+        public async Task<bool> UpdateBrandAsync(Brand brand)
         {
             _context.Brands.Update(brand);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool DeleteBrand(Brand brand)
+        public async Task<bool> DeleteBrandAsync(Brand brand)
         {
             _context.Brands.Remove(brand);
-            return Save();
+            return await SaveAsync();
         }
 
-        public bool BrandExists(int id)
+        public async Task<bool> BrandExistsAsync(int id)
         {
             return _context.Brands.Any(b => b.Id == id);
         }
-        public bool BrandExists(string name)
+        public async Task<bool> BrandExistsAsync(string name)
         {
             return _context.Brands.Any(b => b.Name.Equals(name));
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }
     }
