@@ -1,4 +1,7 @@
-﻿namespace AirCoil_API.Models
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace AirCoil_API.Models
 {
     public class Province
     {
