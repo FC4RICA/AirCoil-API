@@ -21,6 +21,8 @@ namespace AirCoil_API.Mapping
             CreateMap<Branch, BranchDto>().ReverseMap();
             CreateMap<CreateBranchDto, Branch>();
             CreateMap<Job, JobDto>().ReverseMap();
+            CreateMap<Result, ResultDto>().ReverseMap();
+            CreateMap<CreateResultDto, Result>();
         }
     }
 }
