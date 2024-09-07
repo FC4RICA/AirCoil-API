@@ -49,11 +49,11 @@ namespace AirCoil_API.Repository
 
         public async Task<bool> BrandExistsAsync(int id)
         {
-            return _context.Brands.Any(b => b.Id == id);
+            return await _context.Brands.AnyAsync(b => b.Id == id);
         }
         public async Task<bool> BrandExistsAsync(string name)
         {
-            return _context.Brands.Any(b => b.Name.Equals(name));
+            return await _context.Brands.AnyAsync(b => b.Name.Equals(name));
         }
 
         public async Task<bool> SaveAsync()
