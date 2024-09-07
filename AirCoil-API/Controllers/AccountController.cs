@@ -22,6 +22,9 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             if (!ModelState.IsValid)
@@ -53,6 +56,9 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpPost("register")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             try
