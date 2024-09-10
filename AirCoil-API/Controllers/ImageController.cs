@@ -58,7 +58,7 @@ namespace AirCoil_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!await _imageService.CreateImageAsync(file))
+            if (await _imageService.CreateImageAsync(file) == null)
             {
                 ModelState.AddModelError("", "Error occur while saving");
                 return StatusCode(500, ModelState);

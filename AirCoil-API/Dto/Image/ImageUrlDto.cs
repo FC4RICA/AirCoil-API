@@ -2,6 +2,7 @@
 {
     public class ImageUrlDto
     {
+        public int Id { get; set; }
         public string Url { get; set; }
     }
 }

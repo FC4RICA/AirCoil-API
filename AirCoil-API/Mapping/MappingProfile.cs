@@ -1,4 +1,6 @@
 ﻿using AirCoil_API.Dto;
+using AirCoil_API.Dto.Image;
+using AirCoil_API.Interface;
 using AirCoil_API.Models;
 using AutoMapper;
 
@@ -20,9 +22,10 @@ namespace AirCoil_API.Mapping
             CreateMap<CreateServiceCenterDto, ServiceCenter>();
             CreateMap<Branch, BranchDto>().ReverseMap();
             CreateMap<CreateBranchDto, Branch>();
-            CreateMap<Job, JobDto>().ReverseMap();
             CreateMap<Result, ResultDto>().ReverseMap();
             CreateMap<CreateResultDto, Result>();
+            CreateMap<Image, ImageUrlDto>().ReverseMap();
+            CreateMap<Job, JobDto>().ReverseMap();
         }
     }
 }

@@ -22,14 +22,20 @@ namespace AirCoil_API.Repository
 
         public async Task<Image> GetImageAsync(int id)
         {
-            return await _context.Images.Where(i => i.Id == id).FirstOrDefaultAsync();
+            return await _context.Images.FindAsync(id);
         }
         
 
-        public async Task<bool> CreateImageAsync(Image image)
+        public async Task<Image> CreateImageAsync(Image image)
         {
             await _context.Images.AddAsync(image);
-            return await SaveAsync();
+
+            if (!await SaveAsync())
+            {
+                return null;
+            }
+
+            return image;
         }
 
         public async Task<bool> DeleteImageAsync(Image image)

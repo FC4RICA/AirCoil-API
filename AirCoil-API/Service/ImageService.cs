@@ -26,7 +26,7 @@ namespace AirCoil_API.Service
             return imageUrl;
         }
 
-        public async Task<bool> CreateImageAsync(IFormFile file)
+        public async Task<Image> CreateImageAsync(IFormFile file)
         {
             var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
 
