@@ -6,6 +6,7 @@ namespace AirCoil_API.Interface
     {
         Task<ICollection<Model>> GetModelsAsync();
         Task<Model> GetModelAsync(int id);
+        Task<Model> GetModelAsync(string name);
         Task<ICollection<Car>> GetCarsByModelAsync(int id);
         Task<bool> CreateModelAsync(Model model);
         Task<bool> UpdateModelAsync(Model model);

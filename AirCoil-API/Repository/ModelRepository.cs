@@ -16,12 +16,16 @@ namespace AirCoil_API.Repository
 
         public async Task<ICollection<Model>> GetModelsAsync()
         {
-            return await _context.Models.OrderBy(m => m.Id).ToListAsync();
+            return await _context.Models.Include(m => m.Brand).OrderBy(m => m.Id).ToListAsync();
         }
 
         public async Task<Model> GetModelAsync(int id)
         {
-            return await _context.Models.Where(m => m.Id == id).FirstOrDefaultAsync();
+            return await _context.Models.Include(m => m.Brand).Where(m => m.Id == id).FirstOrDefaultAsync();
+        }
+        public async Task<Model> GetModelAsync(string name)
+        {
+            return await _context.Models.Include(m => m.Brand).Where(m => m.Name.Equals(name)).FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Car>> GetCarsByModelAsync(int id)

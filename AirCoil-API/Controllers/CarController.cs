@@ -1,4 +1,5 @@
 ﻿using AirCoil_API.Dto;
+using AirCoil_API.Helpers;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
 using AutoMapper;
@@ -27,9 +28,9 @@ namespace AirCoil_API.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CarDto>))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetCars()
+        public async Task<IActionResult> GetCars([FromQuery] CarQueryObject query)
         {
-            var cars = _mapper.Map<List<CarDto>>(await _carRepository.GetCarsAsync());
+            var cars = _mapper.Map<List<CarDto>>(await _carRepository.GetCarsAsync(query));
 
             if (!ModelState.IsValid)
             {
@@ -61,24 +62,31 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpGet("{carId}/jobs")]
-        [ProducesResponseType(200, Type = typeof(ICollection<JobDto>))]
+        [ProducesResponseType(200, Type = typeof(PagedResult<ICollection<JobDto>>))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetJobsByCar(int carId)
+        public async Task<IActionResult> GetJobsByCar(int carId, [FromQuery] JobQueryObject query)
         {
             if (!await _carRepository.CarExistsAsync(carId))
             {
                 return NotFound();
             }
 
-            var jobs = _mapper.Map<List<JobDto>>(await _carRepository.GetJobsByCarAsync(carId));
+            var jobs = _mapper.Map<List<JobDto>>(await _carRepository.GetJobsByCarAsync(carId, query));
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(jobs);
+            return Ok(new PagedResult<JobDto>
+            {
+                Data = jobs,
+                CurrentPage = query.PageNumber,
+                PageSize = query.PageSize,
+                TotalRecords = jobs.Count(),
+                TotalPages = (int)Math.Ceiling(jobs.Count() / (double)query.PageSize)
+            });
         }
 
         [HttpPost]
@@ -87,14 +95,18 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateCar([FromQuery] int provinceId, [FromQuery] int modelId, [FromBody] CreateCarDto carCreate)
+        public async Task<IActionResult> CreateCar([FromBody] CreateCarDto carCreate)
         {
             if (carCreate == null)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!await _modelRepository.ModelExistsAsync(modelId) || !await _provinceRepository.ProvinceExistsAsync(provinceId))
+            var carMap = _mapper.Map<Car>(carCreate);
+            carMap.Province = await _provinceRepository.GetProvinceAsync(carCreate.Province);
+            carMap.Model = await _modelRepository.GetModelAsync(carCreate.Model);
+
+            if (carMap.Model == null || carMap.Province == null)
             {
                 return NotFound();
             }
@@ -103,10 +115,6 @@ namespace AirCoil_API.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var carMap = _mapper.Map<Car>(carCreate);
-            carMap.Province = await _provinceRepository.GetProvinceAsync(provinceId);
-            carMap.Model = await _modelRepository.GetModelAsync(modelId);
 
             if (await _carRepository.CarExistsAsync(carMap))
             {
@@ -169,7 +177,7 @@ namespace AirCoil_API.Controllers
 
             var carToDelete = await _carRepository.GetCarAsync(carId);
 
-            if ((await _carRepository.GetJobsByCarAsync(carId)).Count() > 0)
+            if ((await _carRepository.GetJobsByCarAsync(carId, null)).Count() > 0)
             {
                 ModelState.AddModelError("", $"There's a job entities that has a relation with car id: {carId}");
                 return StatusCode(405, ModelState);

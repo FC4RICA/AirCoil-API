@@ -6,6 +6,7 @@ namespace AirCoil_API.Interface
     {
         Task<ICollection<Province>> GetProvicesAsync();
         Task<Province> GetProvinceAsync(int id);
+        Task<Province> GetProvinceAsync(string name);
         Task<ICollection<Car>> GetCarsByProvinceAsync(int id);
         Task<bool> CreateProvinceAsync(Province province);
         Task<bool> UpdateProvinceAsync(Province province);

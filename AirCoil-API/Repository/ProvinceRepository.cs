@@ -21,7 +21,12 @@ namespace AirCoil_API.Repository
 
         public async Task<Province> GetProvinceAsync(int id)
         {
-            return await _context.Provinces.Where(p => p.Id == id).FirstOrDefaultAsync();
+            return await _context.Provinces.Where(p => p.Id == id).FirstOrDefaultAsync(); ;
+        }
+
+        public async Task<Province> GetProvinceAsync(string name)
+        {
+            return await _context.Provinces.Where(p => p.Name.Equals(name)).FirstOrDefaultAsync(); ;
         }
 
         public async Task<bool> CreateProvinceAsync(Province province)
