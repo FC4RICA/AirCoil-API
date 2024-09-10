@@ -27,6 +27,7 @@ builder.Services.AddScoped<IServiceCenterRepository, ServiceCenterReposotory>();
 builder.Services.AddScoped<IResultRepository, ResultRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 
@@ -63,7 +64,10 @@ builder.Services.AddSwaggerGen(option =>
 // Database Context Dependency Injection
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration["AirCoil:ConnectionString"]);
+    options.UseSqlServer(
+        builder.Configuration["AirCoil:ConnectionString"], 
+        sqlOptions => sqlOptions.EnableRetryOnFailure()
+        );
 });
 
 builder.Services.AddIdentity<User, IdentityRole>(option =>

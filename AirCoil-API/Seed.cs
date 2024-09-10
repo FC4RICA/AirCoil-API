@@ -98,6 +98,139 @@ namespace AirCoil_API
                 dataContext.SaveChanges();
             }
 
+            if (!dataContext.Brands.Any())
+            {
+                dataContext.Brands.Add(new Brand() { Name = "Toyota" });
+                dataContext.SaveChanges();
+            }
+
+            var toyota = dataContext.Brands.Where(b => b.Name == "Toyota").FirstOrDefault();
+
+            if (!dataContext.Models.Any())
+            {
+                var models = new List<Model>()
+                {
+                    new Model()
+                    {
+                        Name = "86GT",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "ALPHARD",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "AVANZA",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "C-HR",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "CAMRY",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "COMMUTER",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "COROLLA ALTIS",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "CORONA",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "FORTUNER",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "HIACE",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "HILUX REVO DOUBLE CAB",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "HILUX REVO SMART CUB",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "HILUX REVO STANDARD CAB",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "HILUX VIGO",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "INNOVA CRYSTA",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "PRIUS",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "SIENTA",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "VELLFIRE",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "VENTURY",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "VIOS",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "WISH",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "YARIS",
+                        Brand = toyota
+                    },
+                    new Model()
+                    {
+                        Name = "YARIS ATIV",
+                        Brand = toyota
+                    }
+                };
+
+                dataContext.Models.AddRange(models);
+                dataContext.SaveChanges();
+            }
+
             if (!dataContext.Cars.Any())
             {
                 var cars = new List<Car>()
@@ -107,18 +240,51 @@ namespace AirCoil_API
                         LicensePlate = "มก123",
                         CreatedAt = DateTime.Now,
                         Province = dataContext.Provinces.Where(p => p.Name == "นครราชสีมา").FirstOrDefault(),
-                        Model = new Model()
-                        {
-                            Name = "GR Supra",
-                            Brand = new Brand()
-                            {
-                                Name = "Toyota"
-                            }
-                        }
+                        Model = dataContext.Models.Where(m => m.Name == "YARIS").FirstOrDefault()
                     }
                 };
 
                 dataContext.Cars.AddRange(cars);
+                dataContext.SaveChanges();
+            }
+
+            if (!dataContext.Results.Any())
+            {
+                var results = new List<Result>()
+                {
+                    new Result()
+                    {
+                        EDLLevel = 0,
+                        Description = "รอการประมวลผล"
+                    },
+                    new Result()
+                    {
+                        EDLLevel = 1,
+                        Description = "คอยล์สกปรกมาก มีผลต่อสุขภาพ ต้องล้างแอร์"
+                    },
+                    new Result()
+                    {
+                        EDLLevel = 2,
+                        Description = "คอยล์สกปรกมาก ควรล้างแอร์รถยนต์"
+                    },
+                    new Result()
+                    {
+                        EDLLevel = 3,
+                        Description = "คอยล์เย็นสกปรก พิจารนาการล้างคอยล์เย็น"
+                    },
+                    new Result()
+                    {
+                        EDLLevel = 4,
+                        Description = "คอยล์เย็นเริ่มสกปรก ควรรักษาความสะอาดภายในรถ"
+                    },
+                    new Result()
+                    {
+                        EDLLevel = 5,
+                        Description = "ยินดีด้วย คอยล์เย็นของคุณสะอาดสดชื่น"
+                    },
+                };
+
+                dataContext.Results.AddRange(results);
                 dataContext.SaveChanges();
             }
         }

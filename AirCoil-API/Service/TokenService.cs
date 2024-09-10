@@ -21,7 +21,8 @@ namespace AirCoil_API.Service
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName)
+                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString())
             };
 
             var credential = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);

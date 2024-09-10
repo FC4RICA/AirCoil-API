@@ -62,7 +62,7 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpGet("{carId}/jobs")]
-        [ProducesResponseType(200, Type = typeof(PagedResult<ICollection<JobDto>>))]
+        [ProducesResponseType(200, Type = typeof(PagedResult<JobDto>))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetJobsByCar(int carId, [FromQuery] JobQueryObject query)
