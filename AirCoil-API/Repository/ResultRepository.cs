@@ -1,4 +1,5 @@
 ﻿using AirCoil_API.Data;
+using AirCoil_API.Dto;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,11 @@ namespace AirCoil_API.Repository
         public async Task<Result?> GetResultAsync(int id)
         {
             return await _context.Results.Where(r => r.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<Result?> GetResultAsync(PredictResult predict)
+        {
+            return await _context.Results.Where(r => r.EDLLevel == predict.Predictions.FirstOrDefault()).FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Job>> GetJobsByResultAsync(int id)

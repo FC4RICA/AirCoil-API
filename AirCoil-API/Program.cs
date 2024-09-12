@@ -12,6 +12,9 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Add services to the container.
 
 
@@ -29,6 +32,13 @@ builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddHttpClient<IPredictionService, PredictionService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["PredictApi:BaseUrl"]);
+    client.Timeout = TimeSpan.FromSeconds(int.Parse(builder.Configuration["PredictApi:TimeoutSeconds"]));
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

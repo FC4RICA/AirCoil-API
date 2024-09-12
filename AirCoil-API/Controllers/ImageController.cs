@@ -5,6 +5,7 @@ using AirCoil_API.Models;
 using AirCoil_API.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AirCoil_API.Controllers
 {
