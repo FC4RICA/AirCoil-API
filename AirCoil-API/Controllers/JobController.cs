@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using AirCoil_API.Dto.Image;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AirCoil_API.Controllers
 {
@@ -36,6 +37,7 @@ namespace AirCoil_API.Controllers
             _userManager = userManager;
         }
 
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(PagedResult<JobDto>))]
         [ProducesResponseType(400)]
@@ -68,9 +70,9 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateJob(IFormFile file, [FromForm] CreateJobDto jobCreate)
+        public async Task<IActionResult> CreateJob(IFormFileCollection files, [FromForm] CreateJobDto jobCreate)
         {
-            if (file == null || file.Length == 0)
+            if (files.IsNullOrEmpty())
             {
                 return BadRequest(ModelState);
             }
@@ -82,14 +84,15 @@ namespace AirCoil_API.Controllers
                 return NotFound();
             }
 
-            var image = await _imageService.CreateImageAsync(file);
+            var images = await _imageService.CreateImageAsync(files);
 
-            if (image == null)
+            if (images.IsNullOrEmpty())
             {
                 ModelState.AddModelError("", "Error occur while saving");
                 return StatusCode(500, ModelState);
             }
 
+            // predicttion from model
             var result = await _resultRepository.GetResultAsync(1);
 
             var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
@@ -104,7 +107,7 @@ namespace AirCoil_API.Controllers
             {
                 Mileage = jobCreate.Mileage,
                 Car = car,
-                Images = new List<Image> { image },
+                Images = images,
                 Result = result,
                 User = user
             };

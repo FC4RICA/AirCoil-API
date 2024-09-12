@@ -26,7 +26,7 @@ namespace AirCoil_API.Service
             return imageUrl;
         }
 
-        public async Task<Image> CreateImageAsync(IFormFile file)
+        public async Task<ICollection<Image>> CreateImageAsync(IFormFileCollection files)
         {
             var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
 
@@ -35,17 +35,27 @@ namespace AirCoil_API.Service
                 Directory.CreateDirectory(directoryPath);
             }
 
-            var fileName = Path.GetRandomFileName() + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(directoryPath, fileName);
+            var images = new List<Image>();
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            foreach (var file in files)
             {
-                await file.CopyToAsync(stream);
+                var fileName = Path.GetRandomFileName() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(directoryPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                images.Add(new Image
+                {
+                    FileName = fileName,
+                    FilePath = filePath
+                });
             }
 
-            var image = new Image { FileName = fileName, FilePath = filePath };
 
-            return await _imageRepository.CreateImageAsync(image);
+            return await _imageRepository.CreateImageAsync(images);
         }
 
         public async Task<bool> DeleteImageAsync(Image image)
