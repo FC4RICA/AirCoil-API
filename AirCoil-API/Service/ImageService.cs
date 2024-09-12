@@ -26,7 +26,7 @@ namespace AirCoil_API.Service
             return imageUrl;
         }
 
-        public async Task<Image> CreateImageAsync(IFormFile file)
+        public async Task<ICollection<Image>> CreateImageAsync(IFormFileCollection files)
         {
             var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
 
@@ -43,9 +43,15 @@ namespace AirCoil_API.Service
                     await file.CopyToAsync(stream);
                 }
 
-            var image = new Image { FileName = fileName, FilePath = filePath };
+                images.Add(new Image
+                {
+                    FileName = fileName,
+                    FilePath = filePath
+                });
+            }
 
-            return await _imageRepository.CreateImageAsync(image);
+
+            return await _imageRepository.CreateImageAsync(images);
         }
 
         public async Task<bool> DeleteImageAsync(Image image)

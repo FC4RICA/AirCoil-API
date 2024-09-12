@@ -5,6 +5,7 @@ using AirCoil_API.Models;
 using AirCoil_API.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AirCoil_API.Controllers
 {
@@ -46,9 +47,9 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        public async Task<IActionResult> UploadImage(IFormFileCollection files)
         {
-            if (file == null || file.Length == 0)
+            if (files.IsNullOrEmpty())
             {
                 return BadRequest(ModelState);
             }
@@ -58,7 +59,7 @@ namespace AirCoil_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (await _imageService.CreateImageAsync(file) == null)
+            if ((await _imageService.CreateImageAsync(files)).IsNullOrEmpty())
             {
                 ModelState.AddModelError("", "Error occur while saving");
                 return StatusCode(500, ModelState);

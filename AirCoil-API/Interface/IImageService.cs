@@ -7,7 +7,7 @@ namespace AirCoil_API.Interface
         Task<String> GetImageUrlAsync(int id, HttpRequest request);
         Task<Image> GetImageAsync(int id);
         Task<ICollection<Image>> GetImagesAsync();
-        Task<Image> CreateImageAsync(IFormFile file);
+        Task<ICollection<Image>> CreateImageAsync(IFormFileCollection files);
         Task<bool> DeleteImageAsync(Image image);
     }
 }

@@ -6,7 +6,7 @@ namespace AirCoil_API.Interface
     {
         Task<ICollection<Image>> GetImagesAsync();
         Task<Image> GetImageAsync(int id);
-        Task<Image> CreateImageAsync(Image image);
+        Task<ICollection<Image>> CreateImageAsync(ICollection<Image> images);
         Task<bool> DeleteImageAsync(Image image);
         Task<bool> SaveAsync();
     }
