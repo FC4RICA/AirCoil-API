@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using AirCoil_API.Dto.Image;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AirCoil_API.Controllers
 {
@@ -25,8 +26,9 @@ namespace AirCoil_API.Controllers
         private readonly ICarRepository _carRepository;
         private readonly IResultRepository _resultRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IPredictionService _predictionService;
 
-        public JobController(IJobRepository jobRepository, IMapper mapper, IImageService imageService, ICarRepository carRepository, IResultRepository resultRepository, UserManager<User> userManager)
+        public JobController(IJobRepository jobRepository, IMapper mapper, IImageService imageService, ICarRepository carRepository, IResultRepository resultRepository, UserManager<User> userManager, IPredictionService predictionService)
         {
             _jobRepository = jobRepository;
             _mapper = mapper;
@@ -34,8 +36,10 @@ namespace AirCoil_API.Controllers
             _carRepository = carRepository;
             _resultRepository = resultRepository;
             _userManager = userManager;
+            _predictionService = predictionService;
         }
 
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(PagedResult<JobDto>))]
         [ProducesResponseType(400)]
@@ -60,6 +64,27 @@ namespace AirCoil_API.Controllers
                 TotalRecords = jobs.Count(),
                 TotalPages = (int)Math.Ceiling(jobs.Count() / (double)query.PageSize)
             });
+        }
+
+        [Authorize]
+        [HttpGet("{jobId}")]
+        [ProducesResponseType(200, Type = typeof(JobDto))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetJob(int jobId)
+        {
+            var job = _mapper.Map<JobDto>(await _jobRepository.GetJobAsync(jobId));
+            if (job == null)
+            {
+                return NotFound();
+            }
+            job.Images.ToList().ForEach(async i => i.Url = await _imageService.GetImageUrlAsync(i.Id, Request));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(job);
         }
 
         [Authorize]
@@ -115,7 +140,9 @@ namespace AirCoil_API.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Created();
+            Task.Run(() => _predictionService.HandlePredictionAsync(job));
+
+            return CreatedAtAction(nameof(GetJob), job);
         }
     }
 }

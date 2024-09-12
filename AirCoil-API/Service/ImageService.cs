@@ -35,13 +35,13 @@ namespace AirCoil_API.Service
                 Directory.CreateDirectory(directoryPath);
             }
 
-            var fileName = Path.GetRandomFileName() + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(directoryPath, fileName);
+                var fileName = Path.GetRandomFileName() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(directoryPath, fileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
 
             var image = new Image { FileName = fileName, FilePath = filePath };
 

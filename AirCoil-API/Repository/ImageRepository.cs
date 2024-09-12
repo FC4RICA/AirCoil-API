@@ -26,16 +26,16 @@ namespace AirCoil_API.Repository
         }
         
 
-        public async Task<Image> CreateImageAsync(Image image)
+        public async Task<ICollection<Image>> CreateImageAsync(ICollection<Image> images)
         {
-            await _context.Images.AddAsync(image);
+            await _context.Images.AddRangeAsync(images);
 
             if (!await SaveAsync())
             {
                 return null;
             }
 
-            return image;
+            return images;
         }
 
         public async Task<bool> DeleteImageAsync(Image image)
