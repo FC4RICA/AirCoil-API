@@ -128,7 +128,7 @@ namespace AirCoil_API.Controllers
                 Car = car,
                 Result = result,
                 UserId = userId,
-                Images = new List<Image>{ image }
+                Images = new List<Image> { image }
             };
 
             if (!ModelState.IsValid)
@@ -142,11 +142,48 @@ namespace AirCoil_API.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            await Task.Run(() => _predictionService.HandlePredictionAsync(job, Request) );
+            await Task.Run(() => _predictionService.HandlePredictionAsync(job, Request));
 
             var jobDto = _mapper.Map<JobDto>(job);
 
             return Ok(jobDto);
+        }
+
+        [Authorize]
+        [HttpPatch("{jobId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult> UpdateJob(int jobId, CreateCarDto updatedCar)
+        {
+            if (updatedCar == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var job = await _jobRepository.GetJobAsync(jobId);
+            var car = await _carRepository.GetCarAsync(updatedCar);
+
+            if (job == null || car == null)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            job.Car = car;
+
+            if (!await _jobRepository.UpdateJobAsync(job))
+            {
+                ModelState.AddModelError("", "Error occur while updating");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }
