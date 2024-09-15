@@ -4,6 +4,7 @@ using AirCoil_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AirCoil_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240913191111_JobuserConnect")]
+    partial class JobuserConnect
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,6 +147,7 @@ namespace AirCoil_API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -335,13 +339,13 @@ namespace AirCoil_API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "54a00444-f28c-4782-bd6e-910eadf7b831",
+                            Id = "c12ef805-e306-43ea-a1b2-c74a2ba6c55b",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "2bdd1d83-f537-401d-8b46-193b5422cc16",
+                            Id = "6c06024d-6fd7-4e8e-bab6-bf26794a2ba7",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -498,7 +502,9 @@ namespace AirCoil_API.Migrations
 
                     b.HasOne("AirCoil_API.Models.User", "User")
                         .WithMany("Jobs")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Car");
 

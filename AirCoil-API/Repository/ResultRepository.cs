@@ -27,7 +27,7 @@ namespace AirCoil_API.Repository
 
         public async Task<Result?> GetResultAsync(PredictResult predict)
         {
-            return await _context.Results.Where(r => r.EDLLevel == predict.Predictions.FirstOrDefault()).FirstOrDefaultAsync();
+            return await _context.Results.Where(r => r.EDLLevel == predict.Predictions[0]).FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Job>> GetJobsByResultAsync(int id)

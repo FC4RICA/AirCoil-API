@@ -4,7 +4,7 @@ namespace AirCoil_API.Interface
 {
     public interface IPredictionService
     {
-        Task HandlePredictionAsync(Job job);
-        Task<Result> PredictAsync(ICollection<Image> images);
+        Task<bool> HandlePredictionAsync(Job job, HttpRequest request);
+        Task<Result> PredictAsync(ICollection<string> imagesUrl);
     }
 }

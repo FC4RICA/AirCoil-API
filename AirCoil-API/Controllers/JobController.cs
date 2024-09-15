@@ -89,7 +89,7 @@ namespace AirCoil_API.Controllers
 
         [Authorize]
         [HttpPost]
-        [ProducesResponseType(201)]
+        [ProducesResponseType(200, Type = typeof(JobDto))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -107,7 +107,7 @@ namespace AirCoil_API.Controllers
                 return NotFound();
             }
 
-            var image = await _imageService.CreateImageAsync(file);
+            var image = await _imageService.GetImageAsync((await _imageService.CreateImageAsync(file)).Id);
 
             if (image == null)
             {
@@ -117,22 +117,24 @@ namespace AirCoil_API.Controllers
 
             var result = await _resultRepository.GetResultAsync(1);
 
-            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (userId.IsNullOrEmpty())
+                Console.WriteLine("USER ID IS EMPTY");
 
             var job = new Job
             {
                 Mileage = jobCreate.Mileage,
                 Car = car,
-                Images = new List<Image> { image },
                 Result = result,
-                User = user
+                UserId = userId,
+                Images = new List<Image>{ image }
             };
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             if (!await _jobRepository.CreateJobAsync(job))
             {
@@ -140,9 +142,11 @@ namespace AirCoil_API.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            Task.Run(() => _predictionService.HandlePredictionAsync(job));
+            await Task.Run(() => _predictionService.HandlePredictionAsync(job, Request) );
 
-            return CreatedAtAction(nameof(GetJob), job);
+            var jobDto = _mapper.Map<JobDto>(job);
+
+            return Ok(jobDto);
         }
     }
 }

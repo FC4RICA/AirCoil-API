@@ -20,7 +20,7 @@ namespace AirCoil_API.Repository
             var jobs = _context.Jobs
                 .Include(j => j.User)
                 .Include(j => j.Car).ThenInclude(c => c.Province)
-                .Include(j => j.Car).ThenInclude(c => c.Model)
+                .Include(j => j.Car).ThenInclude(c => c.Model).ThenInclude(m => m.Brand)
                 .Include(j => j.Images)
                 .Include(j => j.Result)
                 .AsQueryable();
@@ -45,7 +45,7 @@ namespace AirCoil_API.Repository
             return await _context.Jobs.Where(j => j.Id == id)
                 .Include(j => j.User)
                 .Include(j => j.Car).ThenInclude(c => c.Province)
-                .Include(j => j.Car).ThenInclude(c => c.Model)
+                .Include(j => j.Car).ThenInclude(c => c.Model).ThenInclude(m => m.Brand)
                 .Include(j => j.Images)
                 .Include(j => j.Result)
                 .FirstOrDefaultAsync();

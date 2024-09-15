@@ -1,4 +1,5 @@
 ﻿using AirCoil_API.Dto;
+using AirCoil_API.Dto.Image;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
 
@@ -12,39 +13,43 @@ namespace AirCoil_API.Service
         private readonly ILogger<PredictionService> _logger;
         private readonly HttpClient _httpClient;
 
-        public PredictionService(IJobRepository jobRepository, IImageService imageService, ILogger<PredictionService> logger, HttpClient httpClient)
+        public PredictionService(IJobRepository jobRepository, IImageService imageService, ILogger<PredictionService> logger, HttpClient httpClient, IResultRepository resultRepository)
         {
             _jobRepository = jobRepository;
             _imageService = imageService;
             _logger = logger;
             _httpClient = httpClient;
+            _resultRepository = resultRepository;
         }
 
-        public async Task HandlePredictionAsync(Job job)
+        public async Task<bool> HandlePredictionAsync(Job job, HttpRequest request)
         {
             try
             {
-                job.Result = await PredictAsync(job.Images);
-                await _jobRepository.UpdateJobAsync(job);
+                if (job.Images == null || !job.Images.Any())
+                {
+                    _logger.LogError("No images found for job ID {JobId}", job.Id);
+                    throw new Exception($"No images found for job ID {job.Id}");
+                }
+
+                var imageUrl = await _imageService.GetImageUrlAsync(job.Images.First().Id, request);
+                job.Result = await PredictAsync(new List<string> { imageUrl });
+                return await _jobRepository.UpdateJobAsync(job);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred during prediction for job ID {JobId}", job.Id);
+                return false;
             }
         }
 
-        public async Task<Result> PredictAsync(ICollection<Image> images)
+        public async Task<Result> PredictAsync(ICollection<string> imagesUrl)
         {
-            var content = new MultipartFormDataContent();
-            foreach (var image in images)
-            {
-                var fileContent = new ByteArrayContent(await File.ReadAllBytesAsync(image.FilePath));
-                content.Add(fileContent, "files", image.FileName);
-            }
+            var content = JsonContent.Create(new { urls = imagesUrl });
 
             try
             {
-                var response = await _httpClient.PostAsync("/predict", content);
+                var response = await _httpClient.PostAsync("predict", content);
 
                 if (response.IsSuccessStatusCode)
                 {
