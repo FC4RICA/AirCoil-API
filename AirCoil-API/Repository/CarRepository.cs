@@ -17,11 +17,8 @@ namespace AirCoil_API.Repository
 
         public async Task<ICollection<Car>> GetCarsAsync(CarQueryObject query)
         {
-            var cars = _context.Cars
-                .Include(c => c.Province)
-                .Include(c => c.Model)
-                .ThenInclude(m => m.Brand)
-                .AsQueryable();
+            
+            var cars = _context.Cars.Include(c => c.Province).Include(c => c.Model).ThenInclude(m => m.Brand).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.LicensePlate))
             {
@@ -32,8 +29,9 @@ namespace AirCoil_API.Repository
             {
                 cars = cars.Where(c => c.Province.Name.Contains(query.Province));
             }
+            
 
-            return await _context.Cars.OrderBy(c => c.Id).ToListAsync();
+            return await cars.OrderBy(c => c.Id).ToListAsync();
         }
 
         public async Task<Car> GetCarAsync(int id)

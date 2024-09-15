@@ -1,4 +1,5 @@
 ﻿using AirCoil_API.Dto;
+using AirCoil_API.Dto.Account;
 using AirCoil_API.Dto.Image;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
@@ -26,6 +27,7 @@ namespace AirCoil_API.Mapping
             CreateMap<CreateResultDto, Result>();
             CreateMap<Image, ImageUrlDto>().ReverseMap();
             CreateMap<Job, JobDto>().ReverseMap();
+            CreateMap<User, UserDto>();
         }
     }
 }

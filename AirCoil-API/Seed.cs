@@ -287,6 +287,24 @@ namespace AirCoil_API
                 dataContext.Results.AddRange(results);
                 dataContext.SaveChanges();
             }
+
+            if (!dataContext.Branches.Any()) 
+            {
+                var branches = new List<Branch>()
+                {
+                    new Branch()
+                    {
+                        Name = "ดอนเมือง",
+                        ServiceCenter = new ServiceCenter()
+                        {
+                            Name = "บางกอก"
+                        }
+                    }
+                };
+
+                dataContext.Branches.AddRange(branches);
+                dataContext.SaveChanges();
+            }
         }
     }
 }

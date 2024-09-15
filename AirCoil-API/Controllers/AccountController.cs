@@ -1,9 +1,13 @@
-﻿using AirCoil_API.Dto.Account;
+﻿using AirCoil_API.Dto;
+using AirCoil_API.Dto.Account;
 using AirCoil_API.Interface;
 using AirCoil_API.Models;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AirCoil_API.Controllers
 {
@@ -14,15 +18,20 @@ namespace AirCoil_API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<User> _signInManager;
-        public AccountController(UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signInManager)
+        private readonly IBranchRepository _branchRepository;
+        private readonly IMapper _mapper;
+
+        public AccountController(IMapper mapper, UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signInManager, IBranchRepository branchRepository)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
+            _branchRepository = branchRepository;
+            _mapper = mapper;
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(200, Type = typeof(NewUserDto))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
@@ -56,7 +65,7 @@ namespace AirCoil_API.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(200, Type = typeof(NewUserDto))]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
@@ -70,7 +79,8 @@ namespace AirCoil_API.Controllers
 
                 var user = new User
                 {
-                    UserName = registerDto.Username
+                    UserName = registerDto.Username,
+                    BranchId = registerDto.BranchId,
                 };
 
                 var createdUser = await _userManager.CreateAsync(user, registerDto.Password);
@@ -99,6 +109,26 @@ namespace AirCoil_API.Controllers
             {
                 return StatusCode(500, ex);
             }
+        }
+
+        [Authorize]
+        [HttpGet("current")]
+        [ProducesResponseType(200, Type = typeof(UserDto))]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult> GetCurrentUser()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userName = User.FindFirstValue(ClaimTypes.GivenName);
+            var user = await _userManager.Users.Include(u => u.Branch).ThenInclude(b => b.ServiceCenter)
+                .FirstOrDefaultAsync(u => u.UserName.Equals(userName.ToLower()));
+
+            var userDto = _mapper.Map<UserDto>(user);
+
+            return Ok(userDto);
         }
     }
 }

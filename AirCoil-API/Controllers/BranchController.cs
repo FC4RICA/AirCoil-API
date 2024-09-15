@@ -26,7 +26,7 @@ namespace AirCoil_API.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetBranches()
         {
-            var branches = _mapper.Map<ICollection<BrandDto>>(await _branchRepository.GetBranchesAsync());
+            var branches = _mapper.Map<ICollection<BranchDto>>(await _branchRepository.GetBranchesAsync());
 
             if (!ModelState.IsValid)
             {
